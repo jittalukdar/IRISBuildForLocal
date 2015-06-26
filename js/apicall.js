@@ -295,10 +295,13 @@ function fetchLoginData() {
 // DASHBOARD FUNCTIONS
 function dashboardFunctions() {
     checkUserSession();
-    fetchDashboardPostsCustom();
+    setTimeout(function(){
+        fetchDashboardPostsCustom();
+    },1000);
+    
     setTimeout(function(){
         fetchDashboardPosts();
-    },2000);
+    },3000);
     
 }
 function fetchDashboardPostsCustom() {
