@@ -1,37 +1,35 @@
+/*#### GLOBAL VARIABLES ####*/
 //var BASE_URL = "http://localhost/iris/dev/";
 var BASE_URL = "http://dev.wrctechnologies.com/irisdesign/dev/";
-
-var html_body_back = '<input type="text" placeholder="Enter your keyword">' +
-        '<a class="search" href="#">Post</a> <a class="cls" href="#"></a>';
+var html_body_back = '<input type="text" placeholder="Enter your keyword"><a class="search" href="#">Post</a> <a class="cls" href="#"></a>';
 // Regular Expression for Email.
 var regex = /^([\w-]+(?:\.[\w-]+)*)@((?:[\w-]+\.)*\w[\w-]{0,66})\.([a-z]{2,6}(?:\.[a-z]{2})?)$/i;
-$(window).load(function () {
+/*#### GLOBAL VARIABLES ####*/
+$(document).ready(function () {
+    $("#loadHome").click(function () {
+        $(".loadContent").load("home.html");
+        dashboardFunctions();
+    });
+    $("#loadGroups").click(function () {
+        $(".loadContent").load("groups.html");
+        groupFunction();
+    });
+});
+
+// REGISTRATION CODE
+function regFunction() {
     $("#formSubmitReg1").click(function () {
-        if (validateForm()) {
+        if (validateRegWithEmailForm()) {
             var todo = "reg";
             var fname = $('#fname').val();
             var lname = $('#lname').val();
             var email = $('#email').val();
             var password = $('#password').val();
-            callApiForRegistration(todo, fname, lname, email, password);
+            var avatar = $("#imageRaw").val();
+            callApiForRegistration(todo, fname, lname, email, password, avatar);
         }
     });
-    $("#posts").bind("touchstart click", function () {
-        $(this).fadeOut("slow");
-        setTimeout(function () {
-            $("#postContent").slideDown("slow");
-        }, 1000);
-    });
-    $("#cancelPop").bind("touchstart click", function () {
-        $("#postContent").slideUp("slow");
-        setTimeout(function () {
-            $("#posts").fadeIn("slow");
-        }, 1000);
-
-    });
-});
-
-// REGISTRATION CODE
+}
 function validateForm() {
     var bool = true;
     if ($.trim($("#fname").val()) === "" || $.trim($("#fname").val().length) === 0) {
@@ -74,7 +72,7 @@ function validateForm() {
     }
     return bool;
 }
-function callApiForRegistration(todo, fname, lname, email, password) {
+function callApiForRegistration(todo, fname, lname, email, password, avatar) {
     $.ajax({
         url: BASE_URL + 'api/registration',
         type: "POST",
@@ -83,7 +81,8 @@ function callApiForRegistration(todo, fname, lname, email, password) {
             fname: fname,
             lname: lname,
             email: email,
-            password: password
+            password: password,
+            avatar: avatar
         },
         success: function (resp) {
             var data = $.parseJSON(resp);
@@ -115,17 +114,17 @@ function getBankDetails() {
     });
 }
 function regEmailFunction() {
-    onLoadRegEmailFunction();
+//    onLoadRegEmailFunction();
     $("#formSubmitRegEmail").click(function () {
         if (validateRegWithEmailForm()) {
-//            alert();
             var todo = "regwithbank";
             var fname = "Test";
             var lname = "Test";
             var email = $('#email').val();
-            var username = "test";
-            var password = $('#password').val();
-            callApiForRegistration(todo, fname, lname, email, username, password);
+            var password = '';
+            var avatar = encodeURI($(".flex-active-slide img").attr("src"));
+//            alert(avatar);
+            callApiForRegistration(todo, fname, lname, email, password, avatar);
         }
     });
 }
@@ -152,21 +151,21 @@ function validateRegWithEmailForm() {
     }
     return bool;
 }
-function onLoadRegEmailFunction() {
-    $.ajax({
-        url: BASE_URL + 'api/getSignUpBankLogo',
-        type: 'POST',
-        data: $("#loginForm").serialize(),
-        success: function (resp) {
-            var obj = $.parseJSON(resp);
-            if (obj.code == '200') {
-                $("#bankimage").html('<img src="' + obj.banklogo + '" draggable="false" height="130" height="129"/>');
-            } else {
-                $("#signInBankName").text("SIGN IN WITH BANK OF AMERICA");
-            }
-        }
-    });
-}
+/*function onLoadRegEmailFunction() {
+ $.ajax({
+ url: BASE_URL + 'api/getSignUpBankLogo',
+ type: 'POST',
+ data: $("#loginForm").serialize(),
+ success: function (resp) {
+ var obj = $.parseJSON(resp);
+ if (obj.code == '200') {
+ $("#bankimage").html('<img src="' + obj.banklogo + '" draggable="false" height="130" height="129"/>');
+ } else {
+ $("#signInBankName").text("SIGN IN WITH BANK OF AMERICA");
+ }
+ }
+ });
+ }*/
 // REGISTRATION CODE
 
 // SELECT INTEREST CODE
@@ -262,6 +261,9 @@ function fetchLoginData() {
             var obj = $.parseJSON(resp);
             if (obj.code == '100') {
                 sessionStorage.setItem("uid", obj.uid);
+                sessionStorage.setItem("name", obj.name);
+                sessionStorage.setItem("regType", obj.reg_type);
+                sessionStorage.setItem("avatar", obj.avatar);
                 location.href = 'dashboard.html';
             } else {
                 navigator.notification.alert("Sorry wrong username or password. Please try again.", null, "Notification", "OK");
@@ -280,6 +282,7 @@ function dashboardFunctions() {
     fetchDashboardPosts();
 }
 function fetchDashboardPosts() {
+//    $(".loadContent").html('<div class="loadingscreen"></div>');
     $.ajax({
         url: BASE_URL + 'api/fetchDashBoardFeed',
         type: 'POST',
@@ -290,12 +293,23 @@ function fetchDashboardPosts() {
         },
         success: function (resp) {
             for (var i = 0; i < resp.length; i++) {
-                $("#groupDetails").prepend(constructDasboardDiv(i, resp[i].feed_title, resp[i].feed_desc, resp[i].user_name, resp[i].feed_date, resp[i].comment_count, resp[i].likes, resp[i].comment)).fadeIn("slow");
+                $("#groupDetails").prepend(constructDasboardDiv(i, resp[i].feed_title, resp[i].feed_desc, resp[i].user_name, resp[i].feed_date, resp[i].comment_count, resp[i].likes, resp[i].comment, resp[i].topic, resp[i].meterial_count)).fadeIn("slow");
+                if (resp[i].meterial_count == 0) {
+                    $('#bulb' + i).removeAttr("onclick");
+                    $('#options' + i).css('display', 'none');
+                    $('#newsfeed' + i).removeClass('padright');
+                }
             }
         }
     });
 }
-function constructDasboardDiv(i, feedTitle, feedDesc, fullName, feedDate, commentCount, likesCount, comments) {
+function constructDasboardDiv(i, feedTitle, feedDesc, fullName, feedDate, commentCount, likesCount, comments, topicname, meterialCount) {
+    var cls = "";
+    if (meterialCount > 0) {
+        cls = "bulb2";
+    } else {
+        cls = "bulb";
+    }
     var html = "";
     html += '<div class="card feedbox">' +
             '<div class="row">' +
@@ -335,7 +349,8 @@ function constructDasboardDiv(i, feedTitle, feedDesc, fullName, feedDate, commen
             '<ul>' +
             '<li><a title="" class="like active" href="#"> + ' + likesCount + '</a> </li>' +
             '<li><a title="" class="share" href="#"></a> </li>' +
-            '<li><a id="bulb' + i + '" class="bulb2" href="javascript:void(0);" onclick="hideOptions(' + i + ')"></a> </li>' +
+            '<li>#' + topicname + '</li>' +
+            '<li><a id="bulb' + i + '" class="' + cls + '" href="javascript:void(0);" onclick="hideOptions(' + i + ')"></a> </li>' +
             '</ul>' +
             '</div>' +
             '<div class="options3" id="options' + i + '" style="top:0 !important;">' +
@@ -357,16 +372,15 @@ function constructDasboardDiv(i, feedTitle, feedDesc, fullName, feedDate, commen
 // GROUP FUNCTONS
 function groupFunction() {
     checkUserSession();
-    $(window).bind('deviceready load', function () {
-        fetchPublicGroups();
-        fetchMyGroups();
-        $("#btnCamera").bind("touchstart click", function () {
-            getPictureFromCamera();
-        });
-        $("#btnGallery").bind("touchstart click", function () {
-            getPictureFromGallery();
-        });
+    fetchPublicGroups();
+
+    $("#btnCamera").click(function () {
+        getPictureFromCamera();
     });
+    $("#btnGallery").click(function () {
+        getPictureFromGallery();
+    });
+
 }
 function createGroup() {
     if (validateGroup()) {
@@ -400,12 +414,14 @@ function validateGroup() {
     return bool;
 }
 function fetchPublicGroups() {
+//    $("#groupsDisplay").html('<div class="loadingscreen"></div>');
     $.ajax({
         url: BASE_URL + 'api/fetchUsersPublicGroups',
         type: 'POST',
         data: "uid=" + sessionStorage.getItem("uid"),
         success: function (resp) {
-            console.log(resp);
+//            $(".loadContent").html('');
+//            console.log(resp);
             var data = $.parseJSON(resp);
             var groupListAppend = "";
             var j = 1;
@@ -414,6 +430,7 @@ function fetchPublicGroups() {
                 j++;
             }
             $("#groupsDisplay").append(groupListAppend);
+
         }
     });
 }
@@ -423,7 +440,7 @@ function fetchMyGroups() {
         type: 'POST',
         data: "uid=" + sessionStorage.getItem("uid"),
         success: function (resp) {
-            console.log(resp);
+//            console.log(resp);
             var data = $.parseJSON(resp);
             var groupListAppend = "";
             var j = 1;
@@ -444,7 +461,7 @@ function constructGroupList(i, group_id, groupName, groupContent, groupImage) {
             '<article>' +
             '<header>' + groupName + '</header>' +
             '<div class="blog-image">' +
-            '<a href="javascript:void();" onclick="viewGroupDetails(' + group_id + ')"><img alt="" src="data:image/jpeg;base64,' + groupImage + '" class="img-responsive">' +
+            '<a href="javascript:void(0);" onclick="viewGroupDetails(' + group_id + ')"><img alt="" src="data:image/jpeg;base64,' + groupImage + '" class="img-responsive">' +
             '<div class="row text-center groupbtn">' +
             '<div class="col-sm-4"><a href="#" class="groupsbtn">FOLLOW</a></div>' +
             '<div class="col-sm-4"><a href="#" class="groupsbtn">JOIN</a></div>' +
@@ -464,16 +481,18 @@ function constructGroupList(i, group_id, groupName, groupContent, groupImage) {
 }
 function viewGroupDetails(group_id) {
     sessionStorage.setItem("gid", group_id);
-    location.href = "group_details.html";
+//    location.href = "group_details.html";
+    $(".loadContent").load("group_details.html");
+    groupPostFunctions();
 }
 // GROUP FUNCTONS
 
 // GROUP POST FUNCTIONS
 function groupPostFunctions() {
-    checkUserSession();
-    $(window).bind('deviceready load', function () {
-        fetchCustomGroupPost();
-    });
+//    checkUserSession();
+    fetchCustomGroupPost();
+    $("#menubar").hide();
+    $('#base').css('padding-left', '0');
 }
 function customPost() {
     var post_title = $("#post_title").val();
@@ -490,12 +509,10 @@ function customPost() {
             user_id: sessionStorage.getItem("uid")
         },
         success: function (resp) {
-            //alert(resp);
-            $('.exploewsearch').html(html_body_back);
-            $('.exploewsearch').addClass('exploe2');
-            $("#post_title").val("");
-            $("#post_content").val("");
-            fetchCustomGroupPost();
+            callCancelPop();
+            setTimeout(function () {
+                fetchCustomGroupPost();
+            }, 2000);
         }
     });
 }
@@ -574,6 +591,9 @@ function constructGroupDetailsDiv(i, feedTitle, feedDesc, fullName, feedDate, co
     return html;
 
 }
+function submitPostForGroup() {
+    $("#group_custom_post").submit();
+}
 // GROUP POST FUNCTIONS
 
 // COMMON FUNCTIONS
@@ -615,14 +635,75 @@ function checkUniqueEmail(email) {
         }
     });
 }
-function chooseFromGalleryforAvatar(){
-    getPictureFromGalleryForAvatar();
-    $(".slider").fadeIn();
+function callPosts() {
+    $("#posts").fadeOut("slow");
+    setTimeout(function () {
+        $("#postContent").slideDown("slow");
+    }, 1000);
 }
-function takePicutreforAvatar(){
-    getPictureFromCameraForAvatar();
-    $(".slider").fadeIn();
+function callCancelPop() {
+    $("#postContent").slideUp("slow");
+    setTimeout(function () {
+        $("#posts").fadeIn("slow");
+    }, 1000);
 }
+function changeTab(tabno) {
+//    alert();
+    $("#groupsDisplay").html("");
+    $("#groupsDisplayPrivate").html("");
+    if (tabno == 1) {
+        // Remove class
+        $("#publicgroup").removeAttr("class");
+        $("#mygroup").removeAttr("class");
+        $("#creategroup").removeAttr("class");
+        // Remove class
+        // 
+        // Display third4 Tab
+        $("#third4").removeClass("active");
+        $("#first4").removeClass("active");
+        $("#second4").addClass("active");
+
+        // Add Class
+        $("#publicgroup").addClass("active");
+        setTimeout(function () {
+            fetchPublicGroups();
+        }, 2000);
+    }
+    if (tabno == 2) {
+        // Remove class
+        $("#publicgroup").removeAttr("class");
+        $("#mygroup").removeAttr("class");
+        $("#creategroup").removeAttr("class");
+
+        // Display third4 Tab
+        $("#second4").removeClass("active");
+        $("#first4").removeClass("active");
+        $("#third4").addClass("active");
+
+        // Add Class
+        $("#mygroup").addClass("active");
+        setTimeout(function () {
+            fetchMyGroups();
+        }, 2000);
+    }
+    if (tabno == 3) {
+//        alert(tabno);
+        // Remove class
+        $("#publicgroup").removeAttr("class");
+        $("#mygroup").removeAttr("class");
+        $("#creategroup").removeAttr("class");
+        // Remove class
+        // 
+        // Display third4 Tab
+        $("#third4").removeClass("active");
+        $("#second4").removeClass("active");
+        $("#first4").addClass("active");
+
+        // Add Class
+        $("#creategroup").addClass("active");
+    }
+}
+
 // IMAGE UPLOAD ON IOS
 function getPictureFromCamera() {
     // var imageData;
@@ -660,8 +741,7 @@ function getPictureFromGallery() {
     });
     return true;
 }
-function getPictureFromCameraForAvatar() {
-    // var imageData;
+function takePicutreforAvatar() {
     navigator.camera.getPicture(function (data) {
         $("#imageGallery")
                 .attr('src', 'data:image/jpeg;base64,' + data)
@@ -678,7 +758,7 @@ function getPictureFromCameraForAvatar() {
     });
     return true;
 }
-function getPictureFromGalleryForAvatar() {
+function chooseFromGalleryforAvatar() {
     navigator.camera.getPicture(function (data) {
         $("#imageGallery")
                 .attr('src', 'data:image/jpeg;base64,' + data)
