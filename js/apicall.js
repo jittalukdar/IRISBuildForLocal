@@ -14,6 +14,22 @@ $(document).ready(function () {
         $(".loadContent").load("groups.html");
         groupFunction();
     });
+    $("#loadLearn").click(function () {
+        $(".loadContent").load("learnmeterial.html");
+//        groupFunction();
+    });
+    $("#loadGoals").click(function () {
+        $(".loadContent").load("goals.html");
+//        groupFunction();
+    });
+    $("#loadRewards").click(function () {
+        $(".loadContent").load("reward.html");
+//        groupFunction();
+    });
+    $("#loadEmail").click(function () {
+        $(".loadContent").load("email.html");
+//        groupFunction();
+    });
 });
 
 // REGISTRATION CODE
@@ -279,7 +295,29 @@ function fetchLoginData() {
 // DASHBOARD FUNCTIONS
 function dashboardFunctions() {
     checkUserSession();
-    fetchDashboardPosts();
+    fetchDashboardPostsCustom();
+    setTimeout(function(){
+        fetchDashboardPosts();
+    },2000);
+    
+}
+function fetchDashboardPostsCustom() {
+    $.ajax({
+        url: BASE_URL + 'api/fetchDashBoardFeedForCustomPost',
+        type: 'POST',
+        dataType: 'JSON',
+        async: false,
+        data: {
+            user_id: sessionStorage.getItem("uid")
+        },
+        success: function (resp) {
+//            $("#groupDetails").html("");
+//              alert(JSON.stringify(resp));
+            for (var i = 0; i < resp.length; i++) {
+                $("#groupDetails").prepend(constructGroupDetailsDiv(i, resp[i].feed_title, resp[i].feed_desc, resp[i].user_name, resp[i].feed_date, resp[i].comment_count, resp[i].likes, resp[i].comment,resp[i].reg_type, resp[i].feed_image));
+            }
+        }
+    });
 }
 function fetchDashboardPosts() {
 //    $(".loadContent").html('<div class="loadingscreen"></div>');
@@ -287,13 +325,14 @@ function fetchDashboardPosts() {
         url: BASE_URL + 'api/fetchDashBoardFeed',
         type: 'POST',
         dataType: 'JSON',
-        async: true,
+        async: false,
         data: {
             user_id: sessionStorage.getItem("uid")
         },
         success: function (resp) {
             for (var i = 0; i < resp.length; i++) {
-                $("#groupDetails").prepend(constructDasboardDiv(i, resp[i].feed_title, resp[i].feed_desc, resp[i].user_name, resp[i].feed_date, resp[i].comment_count, resp[i].likes, resp[i].comment, resp[i].topic, resp[i].meterial_count)).fadeIn("slow");
+//                alert(JSON.stringify(resp[i].topic_files));
+                $("#groupDetails").append(constructDasboardDiv(i, resp[i].feed_title, resp[i].feed_desc, resp[i].user_name, resp[i].feed_date, resp[i].comment_count, resp[i].likes, resp[i].comment, resp[i].topic, resp[i].meterial_count, resp[i].topic_files));
                 if (resp[i].meterial_count == 0) {
                     $('#bulb' + i).removeAttr("onclick");
                     $('#options' + i).css('display', 'none');
@@ -303,12 +342,31 @@ function fetchDashboardPosts() {
         }
     });
 }
-function constructDasboardDiv(i, feedTitle, feedDesc, fullName, feedDate, commentCount, likesCount, comments, topicname, meterialCount) {
+function constructDasboardDiv(i, feedTitle, feedDesc, fullName, feedDate, commentCount, likesCount, comments, topicname, meterialCount, topicFiles) {
     var cls = "";
+    var txtLink = '';
+    var mp3Link = '';
+    var mp4Link = '';
     if (meterialCount > 0) {
         cls = "bulb2";
     } else {
         cls = "bulb";
+    }
+//    alert(decodeURIComponent(topicFiles[0].mp4));
+    if (undefined == topicFiles[0].mp3) {
+        mp3Link = 0;
+    } else {
+        mp3Link = decodeURIComponent(topicFiles[0].mp3);
+    }
+    if (undefined == topicFiles[0].txt) {
+        txtLink = 0;
+    } else {
+        txtLink = decodeURIComponent(topicFiles[0].txt);
+    }
+    if (undefined == topicFiles[0].mp4) {
+        mp4Link = 0;
+    } else {
+        mp4Link = decodeURIComponent(topicFiles[0].mp4);
     }
     var html = "";
     html += '<div class="card feedbox">' +
@@ -355,9 +413,9 @@ function constructDasboardDiv(i, feedTitle, feedDesc, fullName, feedDate, commen
             '</div>' +
             '<div class="options3" id="options' + i + '" style="top:0 !important;">' +
             '<ul>' +
-            '<li><a title="" class="list" href="docs_temp.html"></a> </li>' +
-            '<li><a title="" class="music" href="pdf_temp.html"></a> </li>' +
-            '<li><a title="" class="tv" href="ppt_temp.html"></a> </li>' +
+            '<li><a title="" class="list" href="javascript:void(0)" onclick="runText(\'' + txtLink + '\');"></a> </li>' +
+            '<li><a title="" class="music" href="javascript:void(0)" onclick="runMp3(\'' + mp3Link + '\');"></a> </li>' +
+            '<li><a title="" class="tv" href="javascript:void(0)" onclick="runMp4(\'' + mp4Link + '\');"></a> </li>' +
             '</ul>' +
             '</div>' +
             '</div>' +
@@ -490,6 +548,9 @@ function viewGroupDetails(group_id) {
 // GROUP POST FUNCTIONS
 function groupPostFunctions() {
 //    checkUserSession();
+    setTimeout(function(){
+        fetchInitialGroupDetails();
+    },2000);
     fetchCustomGroupPost();
     $("#menubar").hide();
     $('#base').css('padding-left', '0');
@@ -521,7 +582,7 @@ function fetchCustomGroupPost() {
         url: BASE_URL + 'api/fetchCustomGroupPosts',
         type: 'POST',
         dataType: 'JSON',
-        async: true,
+        async: false,
         data: {
             group_id: sessionStorage.getItem("gid"),
             user_id: sessionStorage.getItem("uid")
@@ -529,23 +590,47 @@ function fetchCustomGroupPost() {
         success: function (resp) {
             $("#groupDetails").html("");
             for (var i = 0; i < resp.length; i++) {
-                $("#groupDetails").prepend(constructGroupDetailsDiv(i, resp[i].feed_title, resp[i].feed_desc, resp[i].user_name, resp[i].feed_date, resp[i].comment_count, resp[i].likes, resp[i].comment)).fadeIn("slow");
+                $("#groupDetails").prepend(constructGroupDetailsDiv(i, resp[i].feed_title, resp[i].feed_desc, resp[i].user_name, resp[i].feed_date, resp[i].comment_count, resp[i].likes, resp[i].comment, resp[i].reg_type, resp[i].feed_image));
             }
         }
     });
 }
-function constructGroupDetailsDiv(i, feedTitle, feedDesc, fullName, feedDate, commentCount, likesCount, comments) {
+function fetchInitialGroupDetails(){
+    $.ajax({
+        url: BASE_URL + 'api/fetchInitialGroupDetails',
+        type: 'POST',
+        dataType: 'JSON',
+        async: false,
+        data: {
+            group_id: sessionStorage.getItem("gid"),
+            user_id: sessionStorage.getItem("uid")
+        },
+        success: function (resp) {
+            var i = 0;
+//            alert(resp[i].feed_title);
+            $("#groupDetails").append(constructGroupDetailsDiv(i, resp[i].feed_title, resp[i].feed_desc, resp[i].user_name, resp[i].feed_date, resp[i].comment_count, resp[i].likes, resp[i].comment, resp[i].reg_type, resp[i].feed_image));
+        }
+    });
+}
+function constructGroupDetailsDiv(i, feedTitle, feedDesc, fullName, feedDate, commentCount, likesCount, comments, reg_type, imageRaw) {
+//    alert(reg_type);
+    var image = "";
+    if(reg_type == 1){
+        image = '<img alt="" src="data:image/jpeg;base64,'+imageRaw+'" class="img-responsive">';
+    }else{
+        image = '<img alt="" src="'+decodeURIComponent(imageRaw)+'" class="img-responsive">';
+    }
     var html = "";
     html += '<div class="card feedbox">' +
             '<div class="row">' +
             '<div class="col-md-3">' +
             '<div class="card-body">' +
             '<article class="style-default-bright">' +
-            '<div> <img alt="" src="img/modules/obama.png" class="img-responsive"> </div>' +
+            '<div>'+image+'</div>' +
             '</article>' +
             '</div>' +
             '</div>' +
-            '<div class="col-md-9 newsfeed newsfeed2 padright" id="newsfeed' + i + '">' +
+            '<div class="col-md-9 newsfeed newsfeed2" id="newsfeed' + i + '">' +
             '<div class="card-body">' +
             '<a href="#">' +
             '<h2>' + feedTitle + '</h2>' +
@@ -574,20 +659,24 @@ function constructGroupDetailsDiv(i, feedTitle, feedDesc, fullName, feedDate, co
             '<ul>' +
             '<li><a title="" class="like active" href="#"> + ' + likesCount + '</a> </li>' +
             '<li><a title="" class="share" href="#"></a> </li>' +
-            '<li><a id="bulb' + i + '" class="bulb2" href="javascript:void(0);" onclick="hideOptions(' + i + ')"></a> </li>' +
+//            '<li><a id="bulb' + i + '" class="bulb" href="javascript:void(0);" onclick="hideOptions(' + i + ')"></a> </li>' +
+            '<li><a id="bulb' + i + '" class="bulb" href="javascript:void(0);"></a> </li>' +
             '</ul>' +
             '</div>' +
-            '<div class="options3" id="options' + i + '">' +
-            '<ul>' +
-            '<li><a title="" class="list" href="docs_temp.html"></a> </li>' +
-            '<li><a title="" class="music" href="pdf_temp.html"></a> </li>' +
-            '<li><a title="" class="tv" href="ppt_temp.html"></a> </li>' +
-            '</ul>' +
-            '</div>' +
+//            '<div class="options3" style="top: 0 !important;" id="options' + i + '">' +
+//            '<ul>' +
+//            '<li><a title="" class="list" href="docs_temp.html"></a> </li>' +
+//            '<li><a title="" class="music" href="pdf_temp.html"></a> </li>' +
+//            '<li><a title="" class="tv" href="ppt_temp.html"></a> </li>' +
+//            '</ul>' +
+//            '</div>' +
             '</div>' +
             '</div>' +
             '</div>' +
             '</div>';
+    // Remove Later
+//     $('#options' + i).css('display', 'none');
+    $('#newsfeed' + i).removeClass('padright');
     return html;
 
 }
@@ -595,6 +684,80 @@ function submitPostForGroup() {
     $("#group_custom_post").submit();
 }
 // GROUP POST FUNCTIONS
+
+
+// IMAGE UPLOAD ON IOS
+function getPictureFromCamera() {
+    // var imageData;
+    navigator.camera.getPicture(function (data) {
+        $("#imageGallery")
+                .attr('src', 'data:image/jpeg;base64,' + data)
+                .css("display", "block");
+        $("#imageRaw").val(data);
+    }, function (error) {
+        console.log("Error " + error);
+    }, {
+        destinationType: Camera.DestinationType.DATA_URL,
+        sourceType: Camera.PictureSourceType.CAMERA,
+        allowEdit: false,
+        targetWidth: 640,
+        targetHeight: 426
+    });
+    return true;
+}
+function getPictureFromGallery() {
+    navigator.camera.getPicture(function (data) {
+        $("#imageGallery")
+                .attr('src', 'data:image/jpeg;base64,' + data)
+                .css("display", "block");
+        $("#imageRaw").val(data);
+    }, function (error) {
+        console.log("Error " + error);
+    }, {
+        destinationType: Camera.DestinationType.DATA_URL,
+        sourceType: Camera.PictureSourceType.PHOTOLIBRARY,
+        allowEdit: true,
+        targetWidth: 640,
+        targetHeight: 426,
+        mediaType: Camera.MediaType.PICTURE
+    });
+    return true;
+}
+function takePicutreforAvatar() {
+    navigator.camera.getPicture(function (data) {
+        $("#imageGallery")
+                .attr('src', 'data:image/jpeg;base64,' + data)
+                .css("display", "block");
+        $("#imageRaw").val(data);
+    }, function (error) {
+        console.log("Error " + error);
+    }, {
+        destinationType: Camera.DestinationType.DATA_URL,
+        sourceType: Camera.PictureSourceType.CAMERA,
+        allowEdit: false,
+        targetWidth: 130,
+        targetHeight: 129
+    });
+    return true;
+}
+function chooseFromGalleryforAvatar() {
+    navigator.camera.getPicture(function (data) {
+        $("#imageGallery")
+                .attr('src', 'data:image/jpeg;base64,' + data)
+                .css("display", "block");
+        $("#imageRaw").val(data);
+    }, function (error) {
+        console.log("Error " + error);
+    }, {
+        destinationType: Camera.DestinationType.DATA_URL,
+        sourceType: Camera.PictureSourceType.PHOTOLIBRARY,
+        allowEdit: true,
+        targetWidth: 130,
+        targetHeight: 129,
+        mediaType: Camera.MediaType.PICTURE
+    });
+    return true;
+}
 
 // COMMON FUNCTIONS
 function checkUserSession() {
@@ -703,76 +866,78 @@ function changeTab(tabno) {
         $("#creategroup").addClass("active");
     }
 }
+function runMp4(link) {
+//    alert(link);
+//    playAudio(link);
+}
+function runMp3(link) {
+    playAudio(link);
+}
 
-// IMAGE UPLOAD ON IOS
-function getPictureFromCamera() {
-    // var imageData;
-    navigator.camera.getPicture(function (data) {
-        $("#imageGallery")
-                .attr('src', 'data:image/jpeg;base64,' + data)
-                .css("display", "block");
-        $("#imageRaw").val(data);
-    }, function (error) {
-        console.log("Error " + error);
-    }, {
-        destinationType: Camera.DestinationType.DATA_URL,
-        sourceType: Camera.PictureSourceType.CAMERA,
-        allowEdit: false,
-        targetWidth: 640,
-        targetHeight: 426
-    });
-    return true;
+function playAudio(src) {
+    // Create Media object from src
+    my_media = new Media(src, onSuccess, onError);
+    // Play audio
+    my_media.play();
+    // Update my_media position every second
+    if (mediaTimer == null) {
+        mediaTimer = setInterval(function () {
+            // get my_media position
+            my_media.getCurrentPosition(
+                    // success callback
+                            function (position) {
+                                if (position > -1) {
+                                    setAudioPosition((position) + " sec");
+                                }
+                            },
+                            // error callback
+                                    function (e) {
+                                        console.log("Error getting pos=" + e);
+                                        setAudioPosition("Error: " + e);
+                                    }
+                            );
+                        }, 1000);
+            }
 }
-function getPictureFromGallery() {
-    navigator.camera.getPicture(function (data) {
-        $("#imageGallery")
-                .attr('src', 'data:image/jpeg;base64,' + data)
-                .css("display", "block");
-        $("#imageRaw").val(data);
-    }, function (error) {
-        console.log("Error " + error);
-    }, {
-        destinationType: Camera.DestinationType.DATA_URL,
-        sourceType: Camera.PictureSourceType.PHOTOLIBRARY,
-        allowEdit: true,
-        targetWidth: 640,
-        targetHeight: 426,
-        mediaType: Camera.MediaType.PICTURE
-    });
-    return true;
+function pauseAudio() {
+    if (my_media) {
+        my_media.pause();
+    }
 }
-function takePicutreforAvatar() {
-    navigator.camera.getPicture(function (data) {
-        $("#imageGallery")
-                .attr('src', 'data:image/jpeg;base64,' + data)
-                .css("display", "block");
-        $("#imageRaw").val(data);
-    }, function (error) {
-        console.log("Error " + error);
-    }, {
-        destinationType: Camera.DestinationType.DATA_URL,
-        sourceType: Camera.PictureSourceType.CAMERA,
-        allowEdit: false,
-        targetWidth: 130,
-        targetHeight: 129
-    });
-    return true;
+function stopAudio() {
+    if (my_media) {
+        my_media.stop();
+    }
+    clearInterval(mediaTimer);
+    mediaTimer = null;
 }
-function chooseFromGalleryforAvatar() {
-    navigator.camera.getPicture(function (data) {
-        $("#imageGallery")
-                .attr('src', 'data:image/jpeg;base64,' + data)
-                .css("display", "block");
-        $("#imageRaw").val(data);
-    }, function (error) {
-        console.log("Error " + error);
-    }, {
-        destinationType: Camera.DestinationType.DATA_URL,
-        sourceType: Camera.PictureSourceType.PHOTOLIBRARY,
-        allowEdit: true,
-        targetWidth: 130,
-        targetHeight: 129,
-        mediaType: Camera.MediaType.PICTURE
+function onSuccess() {
+    console.log("playAudio():Audio Success");
+}
+function onError(error) {
+    alert('code: ' + error.code + '\n' +
+            'message: ' + error.message + '\n');
+}
+function setAudioPosition(position) {
+    document.getElementById('audio_position').innerHTML = position;
+}
+function postOnDashboard(){
+    callCancelPop();
+    $.ajax({
+        url: BASE_URL + 'api/postDashboardComment',
+        type: 'POST',
+        data: {
+            post_title: $("#post_title").val(),
+            post_content: $("#post_content").val(),
+            user_id: sessionStorage.getItem("uid")
+        },
+        success: function (resp) {
+            var data = $.parseJSON(resp);
+            dashboardFunctions();
+//            alert(data.message);
+//            setTimeout(function(){
+//                fetchDashboardPosts();
+//            },1000);
+        }
     });
-    return true;
 }
