@@ -13,10 +13,12 @@ $(document).ready(function () {
     $("#loadGroups").click(function () {
         $(".loadContent").load("groups.html");
         groupFunction();
+        d();
     });
     $("#loadLearn").click(function () {
         $(".loadContent").load("learnmeterial.html");
 //        groupFunction();
+        d();
     });
     $("#loadGoals").click(function () {
         $(".loadContent").load("goals.html");
@@ -24,11 +26,13 @@ $(document).ready(function () {
     });
     $("#loadRewards").click(function () {
         $(".loadContent").load("reward.html");
-//        groupFunction();
+        rewardFunction();
+        d();
     });
     $("#loadEmail").click(function () {
         $(".loadContent").load("email.html");
 //        groupFunction();
+        d();
     });
 });
 
@@ -295,14 +299,14 @@ function fetchLoginData() {
 // DASHBOARD FUNCTIONS
 function dashboardFunctions() {
     checkUserSession();
-    setTimeout(function(){
+    setTimeout(function () {
         fetchDashboardPostsCustom();
-    },1000);
-    
-    setTimeout(function(){
+    }, 1000);
+
+    setTimeout(function () {
         fetchDashboardPosts();
-    },3000);
-    
+    }, 3000);
+
 }
 function fetchDashboardPostsCustom() {
     $.ajax({
@@ -317,7 +321,7 @@ function fetchDashboardPostsCustom() {
 //            $("#groupDetails").html("");
 //              alert(JSON.stringify(resp));
             for (var i = 0; i < resp.length; i++) {
-                $("#groupDetails").prepend(constructGroupDetailsDiv(i, resp[i].feed_title, resp[i].feed_desc, resp[i].user_name, resp[i].feed_date, resp[i].comment_count, resp[i].likes, resp[i].comment,resp[i].reg_type, resp[i].feed_image));
+                $("#groupDetails").prepend(constructGroupDetailsDiv(i, resp[i].feed_title, resp[i].feed_desc, resp[i].user_name, resp[i].feed_date, resp[i].comment_count, resp[i].likes, resp[i].comment, resp[i].reg_type, resp[i].feed_image));
             }
         }
     });
@@ -432,7 +436,7 @@ function constructDasboardDiv(i, feedTitle, feedDesc, fullName, feedDate, commen
 
 // GROUP FUNCTONS
 function groupFunction() {
-    checkUserSession();
+//    checkUserSession();
     fetchPublicGroups();
 
     $("#btnCamera").click(function () {
@@ -551,9 +555,9 @@ function viewGroupDetails(group_id) {
 // GROUP POST FUNCTIONS
 function groupPostFunctions() {
 //    checkUserSession();
-    setTimeout(function(){
+    setTimeout(function () {
         fetchInitialGroupDetails();
-    },2000);
+    }, 2000);
     fetchCustomGroupPost();
     $("#menubar").hide();
     $('#base').css('padding-left', '0');
@@ -598,7 +602,7 @@ function fetchCustomGroupPost() {
         }
     });
 }
-function fetchInitialGroupDetails(){
+function fetchInitialGroupDetails() {
     $.ajax({
         url: BASE_URL + 'api/fetchInitialGroupDetails',
         type: 'POST',
@@ -618,10 +622,10 @@ function fetchInitialGroupDetails(){
 function constructGroupDetailsDiv(i, feedTitle, feedDesc, fullName, feedDate, commentCount, likesCount, comments, reg_type, imageRaw) {
 //    alert(reg_type);
     var image = "";
-    if(reg_type == 1){
-        image = '<img alt="" src="data:image/jpeg;base64,'+imageRaw+'" class="img-responsive">';
-    }else{
-        image = '<img alt="" src="'+decodeURIComponent(imageRaw)+'" class="img-responsive">';
+    if (reg_type == 1) {
+        image = '<img alt="" src="data:image/jpeg;base64,' + imageRaw + '" class="img-responsive">';
+    } else {
+        image = '<img alt="" src="' + decodeURIComponent(imageRaw) + '" class="img-responsive">';
     }
     var html = "";
     html += '<div class="card feedbox">' +
@@ -629,7 +633,7 @@ function constructGroupDetailsDiv(i, feedTitle, feedDesc, fullName, feedDate, co
             '<div class="col-md-3">' +
             '<div class="card-body">' +
             '<article class="style-default-bright">' +
-            '<div>'+image+'</div>' +
+            '<div>' + image + '</div>' +
             '</article>' +
             '</div>' +
             '</div>' +
@@ -688,6 +692,62 @@ function submitPostForGroup() {
 }
 // GROUP POST FUNCTIONS
 
+// REWARD FUNCTION
+function rewardFunction() {
+    fetchRewards();
+}
+function fetchRewards() {
+    $.ajax({
+        url: BASE_URL + 'api/fetchRewards',
+        type: 'POST',
+        data: "todo=fetchreward",
+        success: function (resp) {
+//            console.log(resp);
+            var data = $.parseJSON(resp);
+            var j = 1;
+            for (var i = 0; i < data.length; i++) {
+                var hasNext = 1;
+                if (j == data.length) {
+                    hasNext = 0;
+                }
+                $("#constructReward").append(constructRewards(i, data[i].title, data[i].desc, data[i].img, data[i].coins, hasNext));
+                j++;
+            }
+        }
+    });
+}
+function constructRewards(loop, title, desc, img, coins, hasNext) {
+    var image = decodeURIComponent(img);
+    var html = "";
+    var cls = "red";
+    var text = "Not Enough Coins";
+    if (coins <= 10000) {
+        cls = "green";
+        text = "Reedem";
+    }
+    html += '<div class="row">' +
+            '<div class="col-md-2">' +
+            '<article class="style-default-bright">' +
+            '<div> <img alt="" src="' + image + '" class="img-responsive"> </div>' +
+            '</article>' +
+            '</div>' +
+            '<div class="col-md-10 rewardbody">' +
+            '<div class="card-body">' +
+            '<div class="rewardheadsection">' +
+            '<h2 class="martop">' + title + '</h2>' +
+            '<div class="buttonbox"><button class="notenough"><img src="img/rewards3.png" alt=""> ' + coins + '</button>' +
+            '<button class="' + cls + '">' + text + '</button></div>' +
+            '</div>' +
+            '<p class="ashclr">' + desc + '</p>' +
+            '</div>' +
+            '</div>' +
+            '</div>';
+    if (hasNext == 1) {
+        html += "<hr>";
+    }
+    return html;
+}
+// REWARD FUNCTION
 
 // IMAGE UPLOAD ON IOS
 function getPictureFromCamera() {
@@ -871,12 +931,45 @@ function changeTab(tabno) {
 }
 function runMp4(link) {
 //    alert(link);
-//    playAudio(link);
+    if (link != 0) {
+        $("#video").html("");
+        var html = '<video controls style="height: 100%; width: 100%;">' +
+                '<source id="vid" src="' + link + '" type="video/mp4">' +
+                '</video>';
+//        $("#vid").attr("src", link);
+//        $("#video video")[0].load();
+        $("#video").html(html);
+        setTimeout(function () {
+            $("#video").dialog("open");
+        }, 300);
+    }
 }
 function runMp3(link) {
-    playAudio(link);
+//    playAudio(link);
+    if (link != 0) {
+        $("#audio").html("");
+        var html = "";
+        html += '<audio controls style="height: 100%; width: 100%;">' +
+                '<source id="aud" src="' + link + '" type="audio/mpeg">' +
+                '</audio> ';
+//        $("#aud").attr("src", link);
+//        $("#audio audio")[0].load();
+        $("#audio").html(html);
+        setTimeout(function () {
+            $("#audio").dialog("open");
+        }, 300);
+    }
 }
-
+function runText(link) {
+//    $.ajax({
+//        url: BASE_URL + 'api/readFile',
+//        type: 'POST',
+//        data: "link="+encodeURI(link),
+//        success: function (resp) {
+//            alert(resp);
+//        }
+//    });
+}
 function playAudio(src) {
     // Create Media object from src
     my_media = new Media(src, onSuccess, onError);
@@ -924,7 +1017,7 @@ function onError(error) {
 function setAudioPosition(position) {
     document.getElementById('audio_position').innerHTML = position;
 }
-function postOnDashboard(){
+function postOnDashboard() {
     callCancelPop();
     $.ajax({
         url: BASE_URL + 'api/postDashboardComment',
