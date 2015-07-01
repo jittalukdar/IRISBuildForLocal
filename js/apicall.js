@@ -4,35 +4,82 @@ var BASE_URL = "http://dev.wrctechnologies.com/irisdesign/dev/";
 var html_body_back = '<input type="text" placeholder="Enter your keyword"><a class="search" href="#">Post</a> <a class="cls" href="#"></a>';
 // Regular Expression for Email.
 var regex = /^([\w-]+(?:\.[\w-]+)*)@((?:[\w-]+\.)*\w[\w-]{0,66})\.([a-z]{2,6}(?:\.[a-z]{2})?)$/i;
+var loading = '<div class="card feedbox">' +
+        '<div class="row">' +
+        '<div id="newsfeed15" class="col-md-12 newsfeed newsfeed2">' +
+        '<div class="card-body" style="text-align: center; padding: 150px 0;">' +
+        '<img src="img/loading.gif">' +
+        '</div>' +
+        '</div>' +
+        '</div>' +
+        '</div>';
 /*#### GLOBAL VARIABLES ####*/
 $(document).ready(function () {
+//    $("#menubar").show();
+//    $('#base').css('padding-left', '64px');
     $("#loadHome").click(function () {
-        $(".loadContent").load("home.html");
-        dashboardFunctions();
+        $(".loadContent").fadeOut("fast");
+        $(".loadContent").load("home.html").css("display", "none");
+        $(".loadContent").slideDown(500);
+        setTimeout(function () {
+            dashboardFunctions();
+        }, 1000);
+        if($("#picker").click() == false){
+            $(body).removeClass("menubar-visible");
+            $(body).addClass("menubar-pin");
+        }
     });
     $("#loadGroups").click(function () {
-        $(".loadContent").load("groups.html");
-        groupFunction();
-        d();
+        $(".loadContent").fadeOut("fast");
+        $(".loadContent").load("groups.html").css("display", "none");
+        $(".loadContent").slideDown(500);
+        setTimeout(function () {
+            groupFunction();
+        }, 1000);
+        if($("#picker").click() == false){
+            $(body).removeClass("menubar-visible");
+            $(body).addClass("menubar-pin");
+        }       
     });
     $("#loadLearn").click(function () {
-        $(".loadContent").load("learnmeterial.html");
-//        groupFunction();
-        d();
+//        $("#menubar").show();
+//        $('#base').css('padding-left', '64px');
+        $(".loadContent").fadeOut("fast");
+        $(".loadContent").load("learnmeterial.html").css("display", "none");
+        $(".loadContent").slideDown(500);
+//         setTimeout(function(){
+//             
+//        },100);
+        if($("#picker").click() == false){
+            $(body).removeClass("menubar-visible");
+            $(body).addClass("menubar-pin");
+        }
     });
     $("#loadGoals").click(function () {
         $(".loadContent").load("goals.html");
-//        groupFunction();
+        if($("#picker").click() == false){
+            $(body).removeClass("menubar-visible");
+            $(body).addClass("menubar-pin");
+        }
     });
     $("#loadRewards").click(function () {
-        $(".loadContent").load("reward.html");
-        rewardFunction();
-        d();
+        $(".loadContent").fadeOut("fast");
+        $(".loadContent").load("reward.html").css("display", "none");
+        $(".loadContent").slideDown(500);
+        setTimeout(function () {
+            rewardFunction();
+        }, 1000);
+        if($("#picker").click() == false){
+            $(body).removeClass("menubar-visible");
+            $(body).addClass("menubar-pin");
+        }
     });
     $("#loadEmail").click(function () {
         $(".loadContent").load("email.html");
-//        groupFunction();
-        d();
+        if($("#picker").click() == false){
+            $(body).removeClass("menubar-visible");
+            $(body).addClass("menubar-pin");
+        }
     });
 });
 
@@ -437,8 +484,9 @@ function constructDasboardDiv(i, feedTitle, feedDesc, fullName, feedDate, commen
 // GROUP FUNCTONS
 function groupFunction() {
 //    checkUserSession();
-    fetchPublicGroups();
-
+    setTimeout(function () {
+        fetchPublicGroups();
+    }, 2000);
     $("#btnCamera").click(function () {
         getPictureFromCamera();
     });
@@ -485,8 +533,7 @@ function fetchPublicGroups() {
         type: 'POST',
         data: "uid=" + sessionStorage.getItem("uid"),
         success: function (resp) {
-//            $(".loadContent").html('');
-//            console.log(resp);
+            $("#groupsDisplay").html("");
             var data = $.parseJSON(resp);
             var groupListAppend = "";
             var j = 1;
@@ -505,7 +552,7 @@ function fetchMyGroups() {
         type: 'POST',
         data: "uid=" + sessionStorage.getItem("uid"),
         success: function (resp) {
-//            console.log(resp);
+            $("#groupsDisplayPrivate").html("");
             var data = $.parseJSON(resp);
             var groupListAppend = "";
             var j = 1;
@@ -546,21 +593,23 @@ function constructGroupList(i, group_id, groupName, groupContent, groupImage) {
 }
 function viewGroupDetails(group_id) {
     sessionStorage.setItem("gid", group_id);
-//    location.href = "group_details.html";
-    $(".loadContent").load("group_details.html");
-    groupPostFunctions();
+    $(".loadContent").fadeOut("fast");
+    $(".loadContent").load("group_details.html").css("display", "none");
+    $(".loadContent").slideDown(500);
+    setTimeout(function () {
+       groupPostFunctions();
+    }, 1000);
+
 }
 // GROUP FUNCTONS
 
 // GROUP POST FUNCTIONS
 function groupPostFunctions() {
-//    checkUserSession();
+    $("#groupDetails").html(loading);
     setTimeout(function () {
-        fetchInitialGroupDetails();
+         fetchCustomGroupPost();
     }, 2000);
-    fetchCustomGroupPost();
-    $("#menubar").hide();
-    $('#base').css('padding-left', '0');
+   
 }
 function customPost() {
     var post_title = $("#post_title").val();
@@ -597,7 +646,7 @@ function fetchCustomGroupPost() {
         success: function (resp) {
             $("#groupDetails").html("");
             for (var i = 0; i < resp.length; i++) {
-                $("#groupDetails").prepend(constructGroupDetailsDiv(i, resp[i].feed_title, resp[i].feed_desc, resp[i].user_name, resp[i].feed_date, resp[i].comment_count, resp[i].likes, resp[i].comment, resp[i].reg_type, resp[i].feed_image));
+                $("#groupDetails").append(constructGroupDetailsDiv(i, resp[i].feed_title, resp[i].feed_desc, resp[i].user_name, resp[i].feed_date, resp[i].comment_count, resp[i].likes, resp[i].comment, resp[i].reg_type, resp[i].feed_image));
             }
         }
     });
@@ -614,7 +663,6 @@ function fetchInitialGroupDetails() {
         },
         success: function (resp) {
             var i = 0;
-//            alert(resp[i].feed_title);
             $("#groupDetails").append(constructGroupDetailsDiv(i, resp[i].feed_title, resp[i].feed_desc, resp[i].user_name, resp[i].feed_date, resp[i].comment_count, resp[i].likes, resp[i].comment, resp[i].reg_type, resp[i].feed_image));
         }
     });
@@ -694,7 +742,10 @@ function submitPostForGroup() {
 
 // REWARD FUNCTION
 function rewardFunction() {
-    fetchRewards();
+    setTimeout(function () {
+        fetchRewards();
+    }, 2000);
+
 }
 function fetchRewards() {
     $.ajax({
@@ -703,6 +754,7 @@ function fetchRewards() {
         data: "todo=fetchreward",
         success: function (resp) {
 //            console.log(resp);
+            $("#constructReward").html("");
             var data = $.parseJSON(resp);
             var j = 1;
             for (var i = 0; i < data.length; i++) {
@@ -835,10 +887,11 @@ function logout() {
     location.href = "index.html";
 }
 function hideOptions(id) {
+//    alert("bulb"+id);
     $('#options' + id).css('display', 'none');
     $('#newsfeed' + id).removeClass('padright');
-    $("#bulb" + id).removeAttr("onclick");
-    $("#bulb" + id).attr("onclick", "showOptions(" + id + ")");
+//    $("#bulb" + id).removeAttr("onclick");
+    $("#bulb" + id).attr("onclick", "showOptions('" + id + "')");
 }
 function showOptions(id) {
     $('#options' + id).css('display', 'block');
@@ -891,6 +944,7 @@ function changeTab(tabno) {
 
         // Add Class
         $("#publicgroup").addClass("active");
+        $("#groupsDisplay").html(loading);
         setTimeout(function () {
             fetchPublicGroups();
         }, 2000);
@@ -908,6 +962,7 @@ function changeTab(tabno) {
 
         // Add Class
         $("#mygroup").addClass("active");
+        $("#groupsDisplayPrivate").html(loading);
         setTimeout(function () {
             fetchMyGroups();
         }, 2000);
@@ -932,33 +987,44 @@ function changeTab(tabno) {
 function runMp4(link) {
 //    alert(link);
     if (link != 0) {
-        var html = '<video controls style="height: 100%; width: 100%;">'+
-                    '<source id="vid" src="'+link+'" type="video/mp4">'+
+        $("#video").html("");
+        var html = '<video controls style="height: 100%; width: 100%;">' +
+                '<source id="vid" src="' + link + '" type="video/mp4">' +
                 '</video>';
 //        $("#vid").attr("src", link);
 //        $("#video video")[0].load();
         $("#video").html(html);
-        setTimeout(function(){
+        setTimeout(function () {
             $("#video").dialog("open");
-        },300);
+        }, 300);
     }
 }
 function runMp3(link) {
 //    playAudio(link);
-    var html = "";
-    if(link != 0){
-        html += '<audio controls style="height: 100%; width: 100%;">'+
-                    '<source id="aud" src="'+link+'" type="audio/mpeg">'+
+    if (link != 0) {
+        $("#audio").html("");
+        var html = "";
+        html += '<audio controls style="height: 100%; width: 100%;">' +
+                '<source id="aud" src="' + link + '" type="audio/mpeg">' +
                 '</audio> ';
 //        $("#aud").attr("src", link);
 //        $("#audio audio")[0].load();
         $("#audio").html(html);
-        setTimeout(function(){
+        setTimeout(function () {
             $("#audio").dialog("open");
-        },300);
+        }, 300);
     }
 }
-
+function runText(link) {
+//    $.ajax({
+//        url: BASE_URL + 'api/readFile',
+//        type: 'POST',
+//        data: "link="+encodeURI(link),
+//        success: function (resp) {
+//            alert(resp);
+//        }
+//    });
+}
 function playAudio(src) {
     // Create Media object from src
     my_media = new Media(src, onSuccess, onError);
@@ -1025,4 +1091,15 @@ function postOnDashboard() {
 //            },1000);
         }
     });
+}
+function toggleMenu(){
+     return (this.tog = !this.tog) ? c() : d();
+}
+function c() {
+    $("#menubar").show();
+    $('#base').css('padding-left', '240px');
+}
+function d() {
+    $("#menubar").show();
+    $('#base').css('padding-left', '64px');
 }

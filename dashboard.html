@@ -26,7 +26,7 @@
         <script src="js/apicall.js"></script>
     </head>
 
-    <body class="menubar-hoverable header-fixed ">
+    <body id="menubarBody" class="menubar-hoverable header-fixed ">
         <!-- BEGIN HEADER-->
         <header id="header" >
             <div class="headerbar"> 
@@ -209,7 +209,7 @@
                     });
                 </script>
             </div>
-            
+
         </div>
         <!--end #content--> 
         <!-- END CONTENT --> 
@@ -308,12 +308,8 @@
 
         <!-- BEGIN JAVASCRIPT --> 
 
-        <div id="video" title="Video" style="text-align: center;">
-                
-            </div>
-            <div id="audio" title="Audio" style="text-align: center;">
-                
-            </div>
+        <div id="video" title="Video" style="text-align: center;"></div>
+        <div id="audio" title="Audio" style="text-align: center;"></div>
         <script type="text/javascript">
             $(document).ready(function () {
                 //                                        var html_body = '<div class="col-sm-12 col-md-12 col-lg-12">' +
@@ -448,6 +444,7 @@
         <script src="js/modules/irisapp/core/cache/63d0445130d69b2868a8d28c93309746.js"></script> 
         <script src="js/modules/irisapp/core/demo/Demo.js"></script> 
         <script src="js/modules/irisapp/core/demo/DemoDashboard.js"></script> 
+         
         <script type="text/javascript">
             //        $(window).load(function () {
             //            dashboardFunctions();
