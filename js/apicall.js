@@ -24,7 +24,7 @@ $(document).ready(function () {
         setTimeout(function () {
             dashboardFunctions();
         }, 1000);
-        $("#picker").trigger("click");
+//        $("#picker").trigger("click");
 //        if($("#picker").click() == false){
 //            $(body).removeClass("menubar-visible");
 //            $(body).addClass("menubar-pin");
@@ -37,7 +37,7 @@ $(document).ready(function () {
         setTimeout(function () {
             groupFunction();
         }, 1000);
-         $("#picker").trigger("click");
+//         $("#picker").trigger("click");
 //        if($("#picker").click() == false){
 //            $(body).removeClass("menubar-visible");
 //            $(body).addClass("menubar-pin");
@@ -52,7 +52,7 @@ $(document).ready(function () {
 //         setTimeout(function(){
 //             
 //        },100);
- $("#picker").trigger("click");
+// $("#picker").trigger("click");
 //        if($("#picker").click() == false){
 //            $(body).removeClass("menubar-visible");
 //            $(body).addClass("menubar-pin");
@@ -60,10 +60,10 @@ $(document).ready(function () {
     });
     $("#loadGoals").click(function () {
         $(".loadContent").load("goals.html");
-        if($("#picker").click() == false){
-            $(body).removeClass("menubar-visible");
-            $(body).addClass("menubar-pin");
-        }
+//        if($("#picker").click() == false){
+//            $(body).removeClass("menubar-visible");
+//            $(body).addClass("menubar-pin");
+//        }
     });
     $("#loadRewards").click(function () {
         $(".loadContent").fadeOut("fast");
@@ -72,7 +72,7 @@ $(document).ready(function () {
         setTimeout(function () {
             rewardFunction();
         }, 1000);
-         $("#picker").trigger("click");
+//         $("#picker").trigger("click");
 //        if($("#picker").click() == false){
 //            $(body).removeClass("menubar-visible");
 //            $(body).addClass("menubar-pin");
@@ -80,7 +80,7 @@ $(document).ready(function () {
     });
     $("#loadEmail").click(function () {
         $(".loadContent").load("email.html");
-         $("#picker").trigger("click");
+//         $("#picker").trigger("click");
 //        if($("#picker").click() == false){
 //            $(body).removeClass("menubar-visible");
 //            $(body).addClass("menubar-pin");
