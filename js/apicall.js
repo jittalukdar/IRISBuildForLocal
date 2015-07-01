@@ -15,15 +15,15 @@ var loading = '<div class="card feedbox">' +
         '</div>';
 /*#### GLOBAL VARIABLES ####*/
 $(document).ready(function () {
-//    $("#menubar").show();
-//    $('#base').css('padding-left', '64px');
     $("#loadHome").click(function () {
+//        $('#base').css('padding-left', '240px');
         $(".loadContent").fadeOut("fast");
         $(".loadContent").load("home.html").css("display", "none");
         $(".loadContent").slideDown(500);
         setTimeout(function () {
             dashboardFunctions();
         }, 1000);
+        
 //        $("#picker").trigger("click");
 //        if($("#picker").click() == false){
 //            $(body).removeClass("menubar-visible");
@@ -31,17 +31,16 @@ $(document).ready(function () {
 //        }
     });
     $("#loadGroups").click(function () {
+//        $('#base').css('padding-left', '240px');
         $(".loadContent").fadeOut("fast");
         $(".loadContent").load("groups.html").css("display", "none");
         $(".loadContent").slideDown(500);
         setTimeout(function () {
             groupFunction();
         }, 1000);
-//         $("#picker").trigger("click");
-//        if($("#picker").click() == false){
-//            $(body).removeClass("menubar-visible");
-//            $(body).addClass("menubar-pin");
-//        }       
+//        $("#picker").click(function(){
+//             toggleMenu();
+//        });
     });
     $("#loadLearn").click(function () {
 //        $("#menubar").show();
@@ -59,13 +58,17 @@ $(document).ready(function () {
 //        }
     });
     $("#loadGoals").click(function () {
-        $(".loadContent").load("goals.html");
+//        $('#base').css('padding-left', '64px');
+         $(".loadContent").fadeOut("fast");
+        $(".loadContent").load("goals.html").css("display", "none");
+        $(".loadContent").slideDown(500);
 //        if($("#picker").click() == false){
 //            $(body).removeClass("menubar-visible");
 //            $(body).addClass("menubar-pin");
 //        }
     });
     $("#loadRewards").click(function () {
+//        $('#base').css('padding-left', '64px');
         $(".loadContent").fadeOut("fast");
         $(".loadContent").load("reward.html").css("display", "none");
         $(".loadContent").slideDown(500);
@@ -1099,13 +1102,13 @@ function postOnDashboard() {
     });
 }
 function toggleMenu(){
-     return (this.tog = !this.tog) ? c() : d();
+     return (this.tog = !this.tog) ? dd() : cc();
 }
-function c() {
+function cc() {
     $("#menubar").show();
     $('#base').css('padding-left', '240px');
 }
-function d() {
+function dd() {
     $("#menubar").show();
     $('#base').css('padding-left', '64px');
 }
