@@ -24,10 +24,11 @@ $(document).ready(function () {
         setTimeout(function () {
             dashboardFunctions();
         }, 1000);
-        if($("#picker").click() == false){
-            $(body).removeClass("menubar-visible");
-            $(body).addClass("menubar-pin");
-        }
+        $("#picker").trigger("click");
+//        if($("#picker").click() == false){
+//            $(body).removeClass("menubar-visible");
+//            $(body).addClass("menubar-pin");
+//        }
     });
     $("#loadGroups").click(function () {
         $(".loadContent").fadeOut("fast");
@@ -36,10 +37,11 @@ $(document).ready(function () {
         setTimeout(function () {
             groupFunction();
         }, 1000);
-        if($("#picker").click() == false){
-            $(body).removeClass("menubar-visible");
-            $(body).addClass("menubar-pin");
-        }       
+         $("#picker").trigger("click");
+//        if($("#picker").click() == false){
+//            $(body).removeClass("menubar-visible");
+//            $(body).addClass("menubar-pin");
+//        }       
     });
     $("#loadLearn").click(function () {
 //        $("#menubar").show();
@@ -50,10 +52,11 @@ $(document).ready(function () {
 //         setTimeout(function(){
 //             
 //        },100);
-        if($("#picker").click() == false){
-            $(body).removeClass("menubar-visible");
-            $(body).addClass("menubar-pin");
-        }
+ $("#picker").trigger("click");
+//        if($("#picker").click() == false){
+//            $(body).removeClass("menubar-visible");
+//            $(body).addClass("menubar-pin");
+//        }
     });
     $("#loadGoals").click(function () {
         $(".loadContent").load("goals.html");
@@ -69,17 +72,19 @@ $(document).ready(function () {
         setTimeout(function () {
             rewardFunction();
         }, 1000);
-        if($("#picker").click() == false){
-            $(body).removeClass("menubar-visible");
-            $(body).addClass("menubar-pin");
-        }
+         $("#picker").trigger("click");
+//        if($("#picker").click() == false){
+//            $(body).removeClass("menubar-visible");
+//            $(body).addClass("menubar-pin");
+//        }
     });
     $("#loadEmail").click(function () {
         $(".loadContent").load("email.html");
-        if($("#picker").click() == false){
-            $(body).removeClass("menubar-visible");
-            $(body).addClass("menubar-pin");
-        }
+         $("#picker").trigger("click");
+//        if($("#picker").click() == false){
+//            $(body).removeClass("menubar-visible");
+//            $(body).addClass("menubar-pin");
+//        }
     });
 });
 
@@ -346,13 +351,14 @@ function fetchLoginData() {
 // DASHBOARD FUNCTIONS
 function dashboardFunctions() {
     checkUserSession();
+    $("#groupDetails").html(loading);
     setTimeout(function () {
         fetchDashboardPostsCustom();
     }, 1000);
 
     setTimeout(function () {
         fetchDashboardPosts();
-    }, 3000);
+    }, 2000);
 
 }
 function fetchDashboardPostsCustom() {
@@ -365,7 +371,7 @@ function fetchDashboardPostsCustom() {
             user_id: sessionStorage.getItem("uid")
         },
         success: function (resp) {
-//            $("#groupDetails").html("");
+            $("#groupDetails").html("");
 //              alert(JSON.stringify(resp));
             for (var i = 0; i < resp.length; i++) {
                 $("#groupDetails").prepend(constructGroupDetailsDiv(i, resp[i].feed_title, resp[i].feed_desc, resp[i].user_name, resp[i].feed_date, resp[i].comment_count, resp[i].likes, resp[i].comment, resp[i].reg_type, resp[i].feed_image));
