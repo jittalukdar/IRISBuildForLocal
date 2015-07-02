@@ -23,74 +23,40 @@ $(document).ready(function () {
         setTimeout(function () {
             dashboardFunctions();
         }, 1000);
-        
-//        $("#picker").trigger("click");
-//        if($("#picker").click() == false){
-//            $(body).removeClass("menubar-visible");
-//            $(body).addClass("menubar-pin");
-//        }
     });
     $("#loadGroups").click(function () {
-//        $('#base').css('padding-left', '240px');
         $(".loadContent").fadeOut("fast");
         $(".loadContent").load("groups.html").css("display", "none");
         $(".loadContent").slideDown(500);
         setTimeout(function () {
             groupFunction();
         }, 1000);
-//        $("#picker").click(function(){
-//             toggleMenu();
-//        });
     });
     $("#loadLearn").click(function () {
-//        $("#menubar").show();
-//        $('#base').css('padding-left', '64px');
         $(".loadContent").fadeOut("fast");
         $(".loadContent").load("learnmeterial.html").css("display", "none");
         $(".loadContent").slideDown(500);
-//         setTimeout(function(){
-//             
-//        },100);
-// $("#picker").trigger("click");
-//        if($("#picker").click() == false){
-//            $(body).removeClass("menubar-visible");
-//            $(body).addClass("menubar-pin");
-//        }
+        setTimeout(function () {
+            learnMeterialFunctions();
+        }, 1000);
     });
     $("#loadGoals").click(function () {
-//        $('#base').css('padding-left', '64px');
-         $(".loadContent").fadeOut("fast");
+        $(".loadContent").fadeOut("fast");
         $(".loadContent").load("goals.html").css("display", "none");
         $(".loadContent").slideDown(500);
-//        if($("#picker").click() == false){
-//            $(body).removeClass("menubar-visible");
-//            $(body).addClass("menubar-pin");
-//        }
     });
     $("#loadRewards").click(function () {
-//        $('#base').css('padding-left', '64px');
         $(".loadContent").fadeOut("fast");
         $(".loadContent").load("reward.html").css("display", "none");
         $(".loadContent").slideDown(500);
         setTimeout(function () {
             rewardFunction();
         }, 1000);
-//         $("#picker").trigger("click");
-//        if($("#picker").click() == false){
-//            $(body).removeClass("menubar-visible");
-//            $(body).addClass("menubar-pin");
-//        }
     });
     $("#loadEmail").click(function () {
         $(".loadContent").load("email.html");
-//         $("#picker").trigger("click");
-//        if($("#picker").click() == false){
-//            $(body).removeClass("menubar-visible");
-//            $(body).addClass("menubar-pin");
-//        }
     });
 });
-
 // REGISTRATION CODE
 function regFunction() {
     $("#formSubmitReg1").click(function () {
@@ -205,7 +171,6 @@ function regEmailFunction() {
 }
 function validateRegWithEmailForm() {
     var bool = true;
-
     if ($.trim($("#email").val()) === "" || $.trim($("#email").val().length) === 0) {
         $("#email").addClass("error");
         $("#email").focus();
@@ -269,7 +234,6 @@ function fetchInterests() {
             $("#selInt").append(uid);
         }
     });
-
     $("#done").click(function () {
         $.ajax({
             url: BASE_URL + 'api/insertRegisteredUsersChoice',
@@ -358,11 +322,9 @@ function dashboardFunctions() {
     setTimeout(function () {
         fetchDashboardPostsCustom();
     }, 1000);
-
     setTimeout(function () {
         fetchDashboardPosts();
     }, 2000);
-
 }
 function fetchDashboardPostsCustom() {
     $.ajax({
@@ -486,7 +448,6 @@ function constructDasboardDiv(i, feedTitle, feedDesc, fullName, feedDate, commen
             '</div>' +
             '</div>';
     return html;
-
 }
 // DASHBOARD FUNCTIONS
 
@@ -502,7 +463,6 @@ function groupFunction() {
     $("#btnGallery").click(function () {
         getPictureFromGallery();
     });
-
 }
 function createGroup() {
     if (validateGroup()) {
@@ -551,7 +511,6 @@ function fetchPublicGroups() {
                 j++;
             }
             $("#groupsDisplay").append(groupListAppend);
-
         }
     });
 }
@@ -606,9 +565,8 @@ function viewGroupDetails(group_id) {
     $(".loadContent").load("group_details.html").css("display", "none");
     $(".loadContent").slideDown(500);
     setTimeout(function () {
-       groupPostFunctions();
+        groupPostFunctions();
     }, 1000);
-
 }
 // GROUP FUNCTONS
 
@@ -616,9 +574,8 @@ function viewGroupDetails(group_id) {
 function groupPostFunctions() {
     $("#groupDetails").html(loading);
     setTimeout(function () {
-         fetchCustomGroupPost();
+        fetchCustomGroupPost();
     }, 2000);
-   
 }
 function customPost() {
     var post_title = $("#post_title").val();
@@ -742,7 +699,6 @@ function constructGroupDetailsDiv(i, feedTitle, feedDesc, fullName, feedDate, co
 //     $('#options' + i).css('display', 'none');
     $('#newsfeed' + i).removeClass('padright');
     return html;
-
 }
 function submitPostForGroup() {
     $("#group_custom_post").submit();
@@ -754,7 +710,6 @@ function rewardFunction() {
     setTimeout(function () {
         fetchRewards();
     }, 2000);
-
 }
 function fetchRewards() {
     $.ajax({
@@ -809,10 +764,103 @@ function constructRewards(loop, title, desc, img, coins, hasNext) {
     return html;
 }
 // REWARD FUNCTION
-
+// LEARN METERIAL FUNCTIONS
+function learnMeterialFunctions() {
+    fetchCoachRecommendation();
+}
+function fetchCoachRecommendation() {
+    $.ajax({
+        url: BASE_URL + 'api/fetchLearningMaterial',
+        type: 'POST',
+        data: "todo=coach",
+        dataType: 'JSON',
+        success: function (data) {
+             $("#coachRec").html("");
+            console.log(JSON.stringify(data));
+            for (var i = 0; i < data.length; i++) {
+                $("#coachRec").append(constructLearning(i, data[i].cat_name, data[i].cat_title, data[i].cat_desc, data[i].created_on));
+            }
+            setTimeout(function(){
+                fetchAllLearning(data.length+1);
+            },3000);
+        }
+    });
+}
+function fetchAllLearning(length) {
+    var l = length;
+    $.ajax({
+        url: BASE_URL + 'api/fetchLearningMaterial',
+        type: 'POST',
+        data: "todo=all",
+        dataType: 'JSON',
+        success: function (data) {
+             $("#allRec").html("");
+//            console.log(JSON.stringify(data));
+            for (var i = 0; i < data.length; i++) {
+                $("#allRec").append(constructLearning(l, data[i].cat_name, data[i].cat_title, data[i].cat_desc, data[i].created_on));
+                l++;
+            }
+            
+        }
+    });
+}
+function constructLearning(loop, catName, catTitle, catDesc, catDate) {
+    var cls = "collapse";
+    var areaExpnd = "false";
+    var style = "height: 0px;";
+    if(loop == 0){
+        cls = "collapse in";
+        areaExpnd = true;
+        style = "height: 284px;";
+    }
+    var html = '<div class="card card-underline panel">'+
+            '<div data-target="#accordion7-'+loop+'" data-parent="#accordion7" data-toggle="collapse" class="card-head collapsed card-head-sm style-gray-bright rewardshead" aria-expanded="'+areaExpnd+'">'+
+            '<header>'+catName+'<span style="display:inline-block; margin-left:40px; font-size:14px;">Recommended by: John Doe</span></header>'+
+            '<div class="tools">'+
+            '<a class="btn btn-icon-toggle"><i class="fa fa-plus"></i></a>'+
+            '</div>'+
+            '</div>'+
+            
+            ' <div class="'+cls+'" id="accordion7-'+loop+'" aria-expanded="'+areaExpnd+'" style="'+style+'">'+
+            '<div class="card-body learn">'+
+            '<h2 class="martop marbtm">'+catTitle+'</h2>'+
+            '<div class="progress-section">'+
+            '<span style="display:inline-block; text-align:center; width:100%;">Progress</span>'+
+            '<div class="progress"><div style="width: 50%; line-height:15px;" class="progress-bar progress-bar-info"><strong>50%</strong></div></div>'+
+            '</div>'+
+            '<div class="text-default-light">Recommended on   '+catDate+'</div>'+
+            '<p>'+catDesc+'</p>'+
+            '<hr style="margin:0;">'+
+            '<div class="options2">'+
+            '<ul class="marbtm">'+
+            ' <li><a title="" class="list" href="#"></a> </li>'+
+            ' <li><a title="" class="music" href="#"></a> </li>'+
+            ' <li><a title="" class="tv" href="#"></a> </li>'+
+            ' <li><a title="" class="comment" href="#"></a> </li>'+
+            ' </ul>'+
+            '</div>'+
+            '<hr style="margin:0 0 30px ;">'+
+            ' <ul class="list-comments">'+
+            '<li>'+
+            '<div class="card">'+
+            '<div class="comment-avatar martop"><img src="img/modules/avatar4.jpg" alt=""></div>'+
+            '<div class="card-body">'+
+            '<h4 class="comment-title">Jim Peters <small>20/06/2013 at 4:02 pm</small></h4>'+
+            '<p style="margin-bottom:0;">Etiam dui libero, tempor quis congue in, interdum eget tortor. Vivamus aliquam dictum lacus quis tincidunt.  <a href="#" style="color:#0080db;">More...</a></p>'+
+            '</div>'+
+            '</div>'+
+            '</li>'+
+            '</ul>'+
+            '</div>'+
+            '</div>'+
+            '</div>'+
+            '<br>';
+    return html;
+}
+// LEARN METERIAL FUNCTIONS
 // IMAGE UPLOAD ON IOS
 function getPictureFromCamera() {
-    // var imageData;
+// var imageData;
     navigator.camera.getPicture(function (data) {
         $("#imageGallery")
                 .attr('src', 'data:image/jpeg;base64,' + data)
@@ -940,7 +988,7 @@ function changeTab(tabno) {
     $("#groupsDisplay").html("");
     $("#groupsDisplayPrivate").html("");
     if (tabno == 1) {
-        // Remove class
+// Remove class
         $("#publicgroup").removeAttr("class");
         $("#mygroup").removeAttr("class");
         $("#creategroup").removeAttr("class");
@@ -950,7 +998,6 @@ function changeTab(tabno) {
         $("#third4").removeClass("active");
         $("#first4").removeClass("active");
         $("#second4").addClass("active");
-
         // Add Class
         $("#publicgroup").addClass("active");
         $("#groupsDisplay").html(loading);
@@ -959,16 +1006,14 @@ function changeTab(tabno) {
         }, 2000);
     }
     if (tabno == 2) {
-        // Remove class
+// Remove class
         $("#publicgroup").removeAttr("class");
         $("#mygroup").removeAttr("class");
         $("#creategroup").removeAttr("class");
-
         // Display third4 Tab
         $("#second4").removeClass("active");
         $("#first4").removeClass("active");
         $("#third4").addClass("active");
-
         // Add Class
         $("#mygroup").addClass("active");
         $("#groupsDisplayPrivate").html(loading);
@@ -978,7 +1023,7 @@ function changeTab(tabno) {
     }
     if (tabno == 3) {
 //        alert(tabno);
-        // Remove class
+// Remove class
         $("#publicgroup").removeAttr("class");
         $("#mygroup").removeAttr("class");
         $("#creategroup").removeAttr("class");
@@ -988,7 +1033,6 @@ function changeTab(tabno) {
         $("#third4").removeClass("active");
         $("#second4").removeClass("active");
         $("#first4").addClass("active");
-
         // Add Class
         $("#creategroup").addClass("active");
     }
@@ -1015,7 +1059,7 @@ function runMp3(link) {
         var html = "";
         html += '<audio controls style="height: 100%; width: 100%;">' +
                 '<source id="aud" src="' + link + '" type="audio/mpeg">' +
-                '</audio> ';
+                '</audio>';
         $("#audio_position").html(html);
 //        setTimeout(function () {
 //            $("#audio").dialog("open");
@@ -1035,14 +1079,14 @@ function runText(link) {
 //    });
 }
 function playAudio(src) {
-    // Create Media object from src
+// Create Media object from src
     my_media = new Media(src, onSuccess, onError);
     // Play audio
     my_media.play();
     // Update my_media position every second
     if (mediaTimer == null) {
         mediaTimer = setInterval(function () {
-            // get my_media position
+// get my_media position
             my_media.getCurrentPosition(
                     // success callback
                             function (position) {
@@ -1101,8 +1145,8 @@ function postOnDashboard() {
         }
     });
 }
-function toggleMenu(){
-     return (this.tog = !this.tog) ? dd() : cc();
+function toggleMenu() {
+    return (this.tog = !this.tog) ? dd() : cc();
 }
 function cc() {
     $("#menubar").show();
