@@ -1011,17 +1011,17 @@ function runMp4(link) {
 function runMp3(link) {
 //    playAudio(link);
     if (link != 0) {
-        $("#audio").html("");
-        var html = "";
-        html += '<audio controls style="height: 100%; width: 100%;">' +
-                '<source id="aud" src="' + link + '" type="audio/mpeg">' +
-                '</audio> ';
-//        $("#aud").attr("src", link);
-//        $("#audio audio")[0].load();
-        $("#audio").html(html);
-        setTimeout(function () {
-            $("#audio").dialog("open");
-        }, 300);
+//        $("#audio").html("");
+//        var html = "";
+//        html += '<audio controls style="height: 100%; width: 100%;">' +
+//                '<source id="aud" src="' + link + '" type="audio/mpeg">' +
+//                '</audio> ';
+//        $("#audio").html(html);
+//        setTimeout(function () {
+//            $("#audio").dialog("open");
+//        }, 300);
+        alert(link);
+        playAudio(link);
     }
 }
 function runText(link) {
