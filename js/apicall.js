@@ -1087,24 +1087,24 @@ function fetchLearnAudio(catID, ulIndex) {
     $("#comment" + ulIndex).html("");
     $("#comment" + ulIndex).slideUp("very slow");
     setTimeout(function () {
-    $.ajax({
-        url: BASE_URL + 'api/fetchLearnAudio',
-        type: 'POST',
-        dataType: 'JSON',
-        data: {
-            uid: sessionStorage.getItem("uid"),
-            catID: catID
-        },
-        success: function (data) {
+        $.ajax({
+            url: BASE_URL + 'api/fetchLearnAudio',
+            type: 'POST',
+            dataType: 'JSON',
+            data: {
+                uid: sessionStorage.getItem("uid"),
+                catID: catID
+            },
+            success: function (data) {
 //            alert(data);
-            $("#comment" + ulIndex).html("");
-            for (var i = 0; i < data.length; i++) {
-                $("#comment" + ulIndex).html(constructUL("a", data[i].raw_name, data[i].url));
-                $("#comment" + ulIndex).slideDown("very slow");
+                $("#comment" + ulIndex).html("");
+                for (var i = 0; i < data.length; i++) {
+                    $("#comment" + ulIndex).html(constructUL("a", data[i].raw_name, data[i].url));
+                    $("#comment" + ulIndex).slideDown("very slow");
+                }
             }
-        }
-    });
-    },1000);
+        });
+    }, 1000);
 
 }
 function fetchLearnVideo(catID, ulIndex) {
@@ -1506,37 +1506,58 @@ function changeTab(tabno) {
     }
 }
 function runMp4(link) {
-//    alert(link);
     if (link != 0) {
-        $("#video").html("");
-        var html = '<video controls style="height: 100%; width: 100%;">' +
-                '<source id="vid" src="' + link + '" type="video/mp4">' +
+        var htmlVid = '<video width="400" controls>' +
+                '<source src="' + link + '" type="video/ogg">' +
+                '<source src="https://app.box.com/shared/static/ax6ob3jfyjyiq1y1ikk9tf53hxagtw51.mp4" type="video/mp4">' +
+                'Video not supported.'+
                 '</video>';
-//        $("#vid").attr("src", link);
-//        $("#video video")[0].load();
-        $("#video").html(html);
-        setTimeout(function () {
-            $("#video").dialog("open");
-        }, 300);
+        $("#inline_content").html(htmlVid);
+        $(".tv").colorbox({inline: true, width: "45%", height: "51%", href: "#inline_content"});
+    }else{
+        html = '<div style="text-align:center;">Video file does not exist for this post</div>';
+        $("#inline_content").html(html);
+        $(".tv").colorbox({inline: true, width: "35%", href: "#inline_content"});
     }
+    /* if (link != 0) {
+     $("#video").html("");
+     var html = '<video controls style="height: 100%; width: 100%;">' +
+     '<source id="vid" src="' + link + '" type="video/mp4">' +
+     '</video>';
+     //        $("#vid").attr("src", link);
+     //        $("#video video")[0].load();
+     $("#video").html(html);
+     setTimeout(function () {
+     $("#video").dialog("open");
+     }, 300);
+     }*/
 }
 function runMp3(link) {
-//    playAudio(link);
     if (link != 0) {
-        $("#audio_position").html("");
         var html = "";
-        html += '<audio controls style="height: 100%; width: 100%;">' +
-                '<source id="aud" src="' + link + '" type="audio/mpeg">' +
+        html = '<audio controls>' +
+                '<source src="' + link + '" type="audio/mpeg">' +
+                'Audio not supported.'+
                 '</audio>';
-        $("#audio_position").html(html);
-//        setTimeout(function () {
-//            $("#audio").dialog("open");
-//        }, 300);
-//        alert(link);
-//        playAudio(link);
+        $("#inline_content").html(html);
+        $(".music").colorbox({inline: true, width: "35%", href: "#inline_content"});
+    }else{
+        html = '<div style="text-align:center;">Audio file does not exist for this post</div>';
+        $("#inline_content").html(html);
+        $(".music").colorbox({inline: true, width: "35%", href: "#inline_content"});
     }
+    /*if (link != 0) {
+     $("#audio_position").html("");
+     var html = "";
+     html += '<audio controls style="height: 100%; width: 100%;">' +
+     '<source id="aud" src="' + link + '" type="audio/mpeg">' +
+     '</audio>';
+     $("#audio_position").html(html);
+     }*/
 }
 function runText(link) {
+//    alert();
+    $(".list").colorbox({href: '../content/ajax.html'});
 //    $.ajax({
 //        url: BASE_URL + 'api/readFile',
 //        type: 'POST',
