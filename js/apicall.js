@@ -1057,9 +1057,9 @@ function constructLearning(loop, catID, catName, catTitle, catDesc, catDate) {
             '<hr style="margin:0;">' +
             '<div class="options2">' +
             '<ul class="marbtm">' +
-            ' <li><a title="" class="list" href="#" onclick="fetchLearnTxt(' + catID + ',' + loop + ')"></a> </li>' +
-            ' <li><a title="" class="music" href="#" onclick="fetchLearnAudio(' + catID + ',' + loop + ')"></a> </li>' +
-            ' <li><a title="" class="tv" href="#" onclick="fetchLearnVideo(' + catID + ',' + loop + ')"></a> </li>' +
+            ' <li><a title="" class="list" href="javascript:void(0);" onclick="fetchLearnTxt(' + catID + ',' + loop + ')"></a> </li>' +
+            ' <li><a title="" class="music" href="javascript:void(0);" onclick="fetchLearnAudio(' + catID + ',' + loop + ')"></a> </li>' +
+            ' <li><a title="" class="tv" href="javascript:void(0);" onclick="fetchLearnVideo(' + catID + ',' + loop + ')"></a> </li>' +
             ' <li><a title="" class="comment" href="#"></a> </li>' +
             ' </ul>' +
             '</div>' +
@@ -1085,7 +1085,7 @@ function fetchLearnTxt(catID, ulIndex) {
 }
 function fetchLearnAudio(catID, ulIndex) {
     $("#comment" + ulIndex).html("");
-    $("#comment" + ulIndex).slideUp("very slow");
+    $("#comment" + ulIndex).fadeOut("very slow");
     setTimeout(function () {
         $.ajax({
             url: BASE_URL + 'api/fetchLearnAudio',
@@ -1099,8 +1099,9 @@ function fetchLearnAudio(catID, ulIndex) {
 //            alert(data);
                 $("#comment" + ulIndex).html("");
                 for (var i = 0; i < data.length; i++) {
-                    $("#comment" + ulIndex).html(constructUL("a", data[i].raw_name, data[i].url));
-                    $("#comment" + ulIndex).slideDown("very slow");
+                    var randomnum=Math.random().toString(36).substr(2,8);
+                    $("#comment" + ulIndex).html(constructUL("a", randomnum, data[i].raw_name, data[i].url));
+                    $("#comment" + ulIndex).fadeIn("very slow");
                 }
             }
         });
@@ -1109,7 +1110,7 @@ function fetchLearnAudio(catID, ulIndex) {
 }
 function fetchLearnVideo(catID, ulIndex) {
     $("#comment" + ulIndex).html("");
-    $("#comment" + ulIndex).slideUp("very slow");
+    $("#comment" + ulIndex).fadeOut("very slow");
     setTimeout(function () {
         $.ajax({
             url: BASE_URL + 'api/fetchLearnVideo',
@@ -1123,14 +1124,15 @@ function fetchLearnVideo(catID, ulIndex) {
 //            alert(data);
 
                 for (var i = 0; i < data.length; i++) {
-                    $("#comment" + ulIndex).html(constructUL("v", data[i].raw_name, data[i].url));
-                    $("#comment" + ulIndex).slideDown("very slow");
+                    var randomnum=Math.random().toString(36).substr(2,8);
+                    $("#comment" + ulIndex).html(constructUL("v", randomnum, data[i].raw_name, data[i].url));
+                    $("#comment" + ulIndex).fadeIn("very slow");
                 }
             }
         });
     }, 1000);
 }
-function constructUL(fileType, basename, url) {
+function constructUL(fileType, loop, basename, url) {
     var cls = '';
     if (fileType == "a") {
         cls = 'glyphicon glyphicon-headphones';
@@ -1140,7 +1142,7 @@ function constructUL(fileType, basename, url) {
     }
     var html = '<li>' +
             '<div class="card">' +
-            '<div class="comment-avatar martop"><span class="' + cls + '"></span></div>' +
+            '<div class="comment-avatar martop" id="learn'+loop+'" onclick="runLearnMp4(\'' + url + '\',\'' + fileType + '\',\'' + loop + '\');"><span class="' + cls + '"></span></div>' +
             '<div class="card-body">' +
             '<p style="margin-bottom:0;">' + basename + '</p>' +
             '</div>' +
@@ -1509,51 +1511,30 @@ function runMp4(link) {
     if (link != 0) {
         var htmlVid = '<video width="400" controls>' +
                 '<source src="' + link + '" type="video/ogg">' +
-                '<source src="https://app.box.com/shared/static/ax6ob3jfyjyiq1y1ikk9tf53hxagtw51.mp4" type="video/mp4">' +
-                'Video not supported.'+
+                'Video not supported.' +
                 '</video>';
         $("#inline_content").html(htmlVid);
         $(".tv").colorbox({inline: true, width: "45%", height: "51%", href: "#inline_content"});
-    }else{
+    } else {
         html = '<div style="text-align:center;">Video file does not exist for this post</div>';
         $("#inline_content").html(html);
         $(".tv").colorbox({inline: true, width: "35%", href: "#inline_content"});
     }
-    /* if (link != 0) {
-     $("#video").html("");
-     var html = '<video controls style="height: 100%; width: 100%;">' +
-     '<source id="vid" src="' + link + '" type="video/mp4">' +
-     '</video>';
-     //        $("#vid").attr("src", link);
-     //        $("#video video")[0].load();
-     $("#video").html(html);
-     setTimeout(function () {
-     $("#video").dialog("open");
-     }, 300);
-     }*/
 }
 function runMp3(link) {
     if (link != 0) {
         var html = "";
         html = '<audio controls>' +
                 '<source src="' + link + '" type="audio/mpeg">' +
-                'Audio not supported.'+
+                'Audio not supported.' +
                 '</audio>';
         $("#inline_content").html(html);
         $(".music").colorbox({inline: true, width: "35%", href: "#inline_content"});
-    }else{
+    } else {
         html = '<div style="text-align:center;">Audio file does not exist for this post</div>';
         $("#inline_content").html(html);
         $(".music").colorbox({inline: true, width: "35%", href: "#inline_content"});
     }
-    /*if (link != 0) {
-     $("#audio_position").html("");
-     var html = "";
-     html += '<audio controls style="height: 100%; width: 100%;">' +
-     '<source id="aud" src="' + link + '" type="audio/mpeg">' +
-     '</audio>';
-     $("#audio_position").html(html);
-     }*/
 }
 function runText(link) {
 //    alert();
@@ -1567,6 +1548,39 @@ function runText(link) {
 //        }
 //    });
 }
+
+function runLearnMp4(link, fileType, loop) {
+    if (fileType == 'v') {
+        if (link != 0) {
+            var htmlVid = '<video width="400" controls>' +
+                    '<source src="' + link + '" type="video/ogg">' +
+                    '<source src="https://app.box.com/shared/static/ax6ob3jfyjyiq1y1ikk9tf53hxagtw51.mp4" type="video/mp4">' +
+                    'Video not supported.' +
+                    '</video>';
+            $("#inline_content").html(htmlVid);
+            $("#learn"+loop).colorbox({inline: true, width: "45%", height: "51%", href: "#inline_content"});
+        } else {
+            html = '<div style="text-align:center;">Video file does not exist for this post</div>';
+            $("#inline_content").html(html);
+            $("#learn"+loop).colorbox({inline: true, width: "35%", href: "#inline_content"});
+        }
+    } else if (fileType == 'a') {
+        if (link != 0) {
+            var html = "";
+            html = '<audio controls>' +
+                    '<source src="' + link + '" type="audio/mpeg">' +
+                    'Audio not supported.' +
+                    '</audio>';
+            $("#inline_content").html(html);
+            $("#learn"+loop).colorbox({inline: true, width: "35%", href: "#inline_content"});
+        } else {
+            html = '<div style="text-align:center;">Audio file does not exist for this post</div>';
+            $("#inline_content").html(html);
+            $("#learn"+loop).colorbox({inline: true, width: "35%", href: "#inline_content"});
+        }
+    }
+}
+
 function playAudio(src) {
 // Create Media object from src
     my_media = new Media(src, onSuccess, onError);
