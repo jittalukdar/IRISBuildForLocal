@@ -374,9 +374,6 @@ function fetchDashboardPosts() {
 function constructDasboardDiv(i, feedTitle, feedDesc, fullName, feedDate, commentCount, likesCount, comments, topicname, meterialCount, topicFiles, indexNo, topicID) {
 //    alert(indexNo);
 //    alert(comments.length);
-    if (comments.length > 0) {
-//        alert(JSON.stringify(comments))
-    }
     var cls = "";
     var txtLink = '';
     var mp3Link = '';
@@ -453,7 +450,7 @@ function constructDasboardDiv(i, feedTitle, feedDesc, fullName, feedDate, commen
             '</div>' +
             '<div class="options3" id="options' + i + '" style="top:0 !important;">' +
             '<ul>' +
-            '<li><a title="" class="list" href="javascript:void(0)" onclick="runText(\'' + txtLink + '\');"></a> </li>' +
+            '<li><a title="" class="list" href="javascript:void(0)" onclick="runText(\'' + topicID + '\');"></a> </li>' +
             '<li><a title="" class="music" href="javascript:void(0)" onclick="runMp3(\'' + mp3Link + '\');"></a> </li>' +
             '<li><a title="" class="tv" href="javascript:void(0)" onclick="runMp4(\'' + mp4Link + '\');"></a> </li>' +
             '</ul>' +
@@ -493,9 +490,15 @@ function constructCustomPostDasboardDiv(i, feedTitle, feedDesc, fullName, feedDa
             '<h4 style="color:#0080db;">Comment <small>(<a href="postdetails.html">see all comments</a>)</small></h4>' +
             '<ul class="list-comments">';
     for (var j = 0; j < comments.length; j++) {
+        var src = "";
+        if (comments[j].reg_type == 0) {
+            src = decodeURIComponent(comments[j].avatar);
+        } else {
+            src = "data:image/jpeg;base64," + comments[j].avatar;
+        }
         html += '<li>' +
                 '<div class="card">' +
-                '<div class="comment-avatar"><img src="img/modules/avatar4.jpg" alt=""></div>' +
+                '<div class="comment-avatar"><img src="' + src + '" alt=""></div>' +
                 '<div class="card-body">' +
                 '<h4 class="comment-title">' + comments[j].fullname + '<small>' + comments[j].comment_date + '</small></h4>' +
                 '<p style="margin-bottom:0;">' + comments[j].feed_comment + '</p>' +
@@ -1099,7 +1102,7 @@ function fetchLearnAudio(catID, ulIndex) {
 //            alert(data);
                 $("#comment" + ulIndex).html("");
                 for (var i = 0; i < data.length; i++) {
-                    var randomnum=Math.random().toString(36).substr(2,8);
+                    var randomnum = Math.random().toString(36).substr(2, 8);
                     $("#comment" + ulIndex).html(constructUL("a", randomnum, data[i].raw_name, data[i].url));
                     $("#comment" + ulIndex).fadeIn("very slow");
                 }
@@ -1124,7 +1127,7 @@ function fetchLearnVideo(catID, ulIndex) {
 //            alert(data);
 
                 for (var i = 0; i < data.length; i++) {
-                    var randomnum=Math.random().toString(36).substr(2,8);
+                    var randomnum = Math.random().toString(36).substr(2, 8);
                     $("#comment" + ulIndex).html(constructUL("v", randomnum, data[i].raw_name, data[i].url));
                     $("#comment" + ulIndex).fadeIn("very slow");
                 }
@@ -1142,7 +1145,7 @@ function constructUL(fileType, loop, basename, url) {
     }
     var html = '<li>' +
             '<div class="card">' +
-            '<div class="comment-avatar martop" id="learn'+loop+'" onclick="runLearnMp4(\'' + url + '\',\'' + fileType + '\',\'' + loop + '\');"><span class="' + cls + '"></span></div>' +
+            '<div class="comment-avatar martop" id="learn' + loop + '" onclick="runLearnMp4(\'' + url + '\',\'' + fileType + '\',\'' + loop + '\');"><span class="' + cls + '"></span></div>' +
             '<div class="card-body">' +
             '<p style="margin-bottom:0;">' + basename + '</p>' +
             '</div>' +
@@ -1415,17 +1418,36 @@ function logout() {
 }
 function hideOptions(id) {
 //    alert("bulb"+id);
-    $('#options' + id).css('display', 'none');
-    $('#newsfeed' + id).removeClass('padright');
+//    if($('#newsfeed' + id).hasClass("padright")){
+//         alert("has class padright");
+//         $('#newsfeed' + id).removeClass('padright');
+//    }else{
+//         alert("no padright class");
+//         $('#newsfeed' + id).addClass('padright');
+//    }
+    if ($('#options' + id).css("display") == "block") {
+        $('#newsfeed' + id).removeAttr("class");
+        $('#newsfeed' + id).attr("class", "col-md-9 newsfeed newsfeed2");
+        $('#options' + id).css('display', 'none');
+    } else {
+        $('#newsfeed' + id).removeAttr("class");
+        $('#newsfeed' + id).attr("class", "col-md-9 newsfeed newsfeed2 padright");
+        $('#options' + id).css('display', 'block');
+    }
+
+//    $("#bulb" + id).removeAttr("onclick");   
+//    $("#bulb" + id).attr("onclick", "showOptions('" + id + "')");   
+
+
 //    $("#bulb" + id).removeAttr("onclick");
-    $("#bulb" + id).attr("onclick", "showOptions('" + id + "')");
+
 }
-function showOptions(id) {
-    $('#options' + id).css('display', 'block');
-    $('#newsfeed' + id).addClass('padright');
-    $("#bulb" + id).removeAttr("onclick");
-    $("#bulb" + id).attr("onclick", "hideOptions(" + id + ")");
-}
+//function showOptions(id) {
+//    $('#options' + id).css('display', 'block');
+//    $('#newsfeed' + id).addClass('padright');
+//    $("#bulb" + id).removeAttr("onclick");
+//    $("#bulb" + id).attr("onclick", "hideOptions(" + id + ")");
+//}
 function checkUniqueEmail(email) {
     $.ajax({
         url: BASE_URL + 'api/checkUniqueEmail',
@@ -1507,11 +1529,11 @@ function changeTab(tabno) {
         $("#creategroup").addClass("active");
     }
 }
+
 function runMp4(link) {
     $("#inline_content").html("");
     if (link != 0) {
         var htmlVid = '<video width="400" controls>' +
-                '<source src="' + link + '" type="video/ogg">' +
                 '<source src="' + link + '" type="video/mp4">' +
                 'Video not supported.' +
                 '</video>';
@@ -1538,17 +1560,20 @@ function runMp3(link) {
         $(".music").colorbox({inline: true, width: "35%", href: "#inline_content"});
     }
 }
-function runText(link) {
-//    alert();
-    $(".list").colorbox({href: '../content/ajax.html'});
-//    $.ajax({
-//        url: BASE_URL + 'api/readFile',
-//        type: 'POST',
-//        data: "link="+encodeURI(link),
-//        success: function (resp) {
-//            alert(resp);
-//        }
-//    });
+function runText(topicID) {
+    var p = "<p class='showContent'>Loading Content ...</p>";
+    $("#inline_content").html(p);
+    $(".list").colorbox({inline: true, width: "35%", href: "#inline_content"});
+    $.ajax({
+        url: BASE_URL + 'api/readFile',
+        type: 'POST',
+        data: "topicID=" + topicID,
+        success: function (resp) {
+            var html = "<p style='text-align:center;'>" + resp + "</p>";
+            $(".showContent").html(html);
+        }
+    });
+        
 }
 
 function runLearnMp4(link, fileType, loop) {
@@ -1559,11 +1584,11 @@ function runLearnMp4(link, fileType, loop) {
                     'Video not supported.' +
                     '</video>';
             $("#inline_content").html(htmlVid);
-            $("#learn"+loop).colorbox({inline: true, width: "45%", height: "51%", href: "#inline_content"});
+            $("#learn" + loop).colorbox({inline: true, width: "45%", height: "51%", href: "#inline_content"});
         } else {
             html = '<div style="text-align:center;">Video file does not exist for this post</div>';
             $("#inline_content").html(html);
-            $("#learn"+loop).colorbox({inline: true, width: "35%", href: "#inline_content"});
+            $("#learn" + loop).colorbox({inline: true, width: "35%", href: "#inline_content"});
         }
     } else if (fileType == 'a') {
         if (link != 0) {
@@ -1573,11 +1598,11 @@ function runLearnMp4(link, fileType, loop) {
                     'Audio not supported.' +
                     '</audio>';
             $("#inline_content").html(html);
-            $("#learn"+loop).colorbox({inline: true, width: "35%", href: "#inline_content"});
+            $("#learn" + loop).colorbox({inline: true, width: "35%", href: "#inline_content"});
         } else {
             html = '<div style="text-align:center;">Audio file does not exist for this post</div>';
             $("#inline_content").html(html);
-            $("#learn"+loop).colorbox({inline: true, width: "35%", href: "#inline_content"});
+            $("#learn" + loop).colorbox({inline: true, width: "35%", href: "#inline_content"});
         }
     }
 }
