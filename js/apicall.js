@@ -1007,6 +1007,7 @@ function fetchCoachRecommendation() {
             console.log(JSON.stringify(data));
             for (var i = 0; i < data.length; i++) {
                 $("#coachRec").append(constructLearning(i, data[i].cat_id, data[i].cat_name, data[i].cat_title, data[i].cat_desc, data[i].created_on));
+                fetchLearnTxt(data[i].cat_id,i);
             }
             setTimeout(function () {
                 fetchAllLearning(data.length + 1);
@@ -1026,6 +1027,7 @@ function fetchAllLearning(length) {
 //            console.log(JSON.stringify(data));
             for (var i = 0; i < data.length; i++) {
                 $("#allRec").append(constructLearning(l, data[i].cat_id, data[i].cat_name, data[i].cat_title, data[i].cat_desc, data[i].created_on));
+                fetchLearnTxt(data[i].cat_id,l);
                 l++;
             }
 
@@ -1068,14 +1070,6 @@ function constructLearning(loop, catID, catName, catTitle, catDesc, catDate) {
             '</div>' +
             '<hr style="margin:0 0 30px ;">' +
             ' <ul class="list-comments" id="comment' + loop + '">' +
-            '<li>' +
-            '<div class="card">' +
-            '<div class="comment-avatar martop"><span class="glyphicon glyphicon glyphicon-th-list opacity-50"></span></div>' +
-            '<div class="card-body">' +
-            '<p style="margin-bottom:0;">Etiam dui libero, tempor quis congue in, interdum eget tortor. Vivamus aliquam dictum lacus quis tincidunt.  <a href="#" style="color:#0080db;">More...</a></p>' +
-            '</div>' +
-            '</div>' +
-            '</li>' +
             '</ul>' +
             '</div>' +
             '</div>' +
@@ -1084,7 +1078,27 @@ function constructLearning(loop, catID, catName, catTitle, catDesc, catDate) {
     return html;
 }
 function fetchLearnTxt(catID, ulIndex) {
-
+    $("#comment" + ulIndex).html("");
+    $("#comment" + ulIndex).fadeOut("very slow");
+    setTimeout(function () {
+     $.ajax({
+            url: BASE_URL + 'api/fetchLearnText',
+            type: 'POST',
+            dataType: 'JSON',
+            data: {
+                catID: catID
+            },
+            success: function (data) {
+//            alert(data.length);
+                $("#comment" + ulIndex).html("");
+                for (var i = 0; i < data.length; i++) {
+                    var randomnum = Math.random().toString(36).substr(2, 8);
+                    $("#comment" + ulIndex).append(constructUL("t", randomnum, data[i].raw_name, data[i].url));
+                }
+                $("#comment" + ulIndex).fadeIn("very slow");
+            }
+        });
+    },1000);
 }
 function fetchLearnAudio(catID, ulIndex) {
     $("#comment" + ulIndex).html("");
@@ -1103,7 +1117,7 @@ function fetchLearnAudio(catID, ulIndex) {
                 $("#comment" + ulIndex).html("");
                 for (var i = 0; i < data.length; i++) {
                     var randomnum = Math.random().toString(36).substr(2, 8);
-                    $("#comment" + ulIndex).html(constructUL("a", randomnum, data[i].raw_name, data[i].url));
+                    $("#comment" + ulIndex).append(constructUL("a", randomnum, data[i].raw_name, data[i].url));
                     $("#comment" + ulIndex).fadeIn("very slow");
                 }
             }
@@ -1128,7 +1142,7 @@ function fetchLearnVideo(catID, ulIndex) {
 
                 for (var i = 0; i < data.length; i++) {
                     var randomnum = Math.random().toString(36).substr(2, 8);
-                    $("#comment" + ulIndex).html(constructUL("v", randomnum, data[i].raw_name, data[i].url));
+                    $("#comment" + ulIndex).append(constructUL("v", randomnum, data[i].raw_name, data[i].url));
                     $("#comment" + ulIndex).fadeIn("very slow");
                 }
             }
@@ -1142,6 +1156,9 @@ function constructUL(fileType, loop, basename, url) {
     }
     if (fileType == "v") {
         cls = 'glyphicon glyphicon-facetime-video';
+    }
+    if (fileType == "t") {
+        cls = 'glyphicon glyphicon glyphicon-th-list opacity-50';
     }
     var html = '<li>' +
             '<div class="card">' +
@@ -1604,6 +1621,8 @@ function runLearnMp4(link, fileType, loop) {
             $("#inline_content").html(html);
             $("#learn" + loop).colorbox({inline: true, width: "35%", href: "#inline_content"});
         }
+    }else{
+        return false;
     }
 }
 

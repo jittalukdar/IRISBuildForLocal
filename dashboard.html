@@ -397,8 +397,8 @@
                 }
                 //Hide & show menu left
                 $('#picker,.bulb2').on('click', function (e) {
-                    // $("#menubar").show();
-                    // $('#base').css('padding-left','240px');
+//                     $("#menubar").show();
+//                     $('#base').css('padding-left','240px');
                     e.stopPropagation();
 
                 });
@@ -409,32 +409,6 @@
                     $('#base').css('padding-left', '0');
                 });
 
-                $("#video").dialog({
-                    autoOpen: false,
-                    width: 500,
-                    height: 500,
-                    show: {
-                        effect: "blind",
-                        duration: 1000
-                    },
-                    hide: {
-                        effect: "explode",
-                        duration: 1000
-                    }
-                });
-                $("#audio").dialog({
-                    autoOpen: false,
-                    width: 500,
-                    height: 100,
-                    show: {
-                        effect: "blind",
-                        duration: 1000
-                    },
-                    hide: {
-                        effect: "explode",
-                        duration: 1000
-                    }
-                });
             });
         </script>
         <script src="phonegap.js"></script>
