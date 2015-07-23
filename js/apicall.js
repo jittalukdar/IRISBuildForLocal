@@ -1,6 +1,7 @@
 /*#### GLOBAL VARIABLES ####*/
 //var BASE_URL = "http://localhost/iris/dev/";
-var BASE_URL = "http://dev.wrctechnologies.com/irisdesign/dev/";
+//var BASE_URL = "http://dev.wrctechnologies.com/irisdesign/dev/";
+var BASE_URL = "http://52.7.252.231/admin/";
 var html_body_back = '<input type="text" placeholder="Enter your keyword"><a class="search" href="#">Post</a> <a class="cls" href="#"></a>';
 // Regular Expression for Email.
 var regex = /^([\w-]+(?:\.[\w-]+)*)@((?:[\w-]+\.)*\w[\w-]{0,66})\.([a-z]{2,6}(?:\.[a-z]{2})?)$/i;
