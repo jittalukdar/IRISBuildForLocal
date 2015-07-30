@@ -7526,6 +7526,7 @@ input.switch:checked ~ label:after
 
 a:hover, a:active, a:focus{
     outline: none !important;
+    text-decoration: none;
 }
 
 

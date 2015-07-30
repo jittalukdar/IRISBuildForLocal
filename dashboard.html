@@ -22,19 +22,19 @@
         <link type="text/css" rel="stylesheet" href="css/css/material-design-iconic-font.mine7ea.css?1422823240" />
         <link type="text/css" rel="stylesheet" href="css/rickshawd56b.css?1422823372" />
         <link type="text/css" rel="stylesheet" href="css/morris.core5e0a.css?1422823370" />
-        
+
         <script src="js/modules/irisapp/libs/jquery/jquery-1.11.2.min.js"></script> 
         <script src="jqueryui/jquery-ui.js"></script>
         <script src="js/jquery.colorbox.js"></script>
         <script type="text/javascript" src="js/ac_quicktime.js"></script>
         <script src="js/apicall.js"></script>
-        
+
     </head>
 
     <body id="menubarBody" class="menubar-hoverable header-fixed ">
         <div style='display:none;'>
             <div id='inline_content' style='padding:10px; background:#fff;'></div>
-            </div>
+        </div>
         <!-- BEGIN HEADER-->
         <header id="header" >
             <div class="headerbar"> 
@@ -201,7 +201,7 @@
             </div>
         </header>
         <!-- END HEADER--> 
-        
+
         <!-- BEGIN BASE-->
         <div id="base"> 
             <!-- BEGIN OFFCANVAS LEFT -->
@@ -384,9 +384,9 @@
                     return (this.tog = !this.tog) ? a() : b();
                     //e.stopPropagation();   
                 });
-                $('#picker').click(function () {
-                    return (this.tog = !this.tog) ? c() : d();
-                });
+//                $('#picker').click(function () {
+//                    return (this.tog = !this.tog) ? c() : d();
+//                });
                 function c() {
                     $("#menubar").show();
                     $('#base').css('padding-left', '240px');
@@ -403,11 +403,14 @@
 
                 });
 
-                $(document).on('click', function (e) {
-                    // Do whatever you want; the event that'd fire if the "special" element has been clicked on has been cancelled.
-                    $("#menubar").hide();
-                    $('#base').css('padding-left', '0');
-                });
+                 $(document).on('click', function (e) {
+                     // Do whatever you want; the event that'd fire if the "special" element has been clicked on has been cancelled.
+//                     $("#menubar").hide();
+//                     $('#base').css('padding-left', '0');
+                       if($("#menubarBody").hasClass("menubar-pin")){
+                            $('#base').css('padding-left', '64px');
+                       }
+                 });
 
             });
         </script>
@@ -426,11 +429,14 @@
         <script src="js/modules/irisapp/core/cache/63d0445130d69b2868a8d28c93309746.js"></script> 
         <script src="js/modules/irisapp/core/demo/Demo.js"></script> 
         <script src="js/modules/irisapp/core/demo/DemoDashboard.js"></script> 
-        
+
         <script type="text/javascript">
-            //        $(window).load(function () {
-            //            dashboardFunctions();
-            //        });
+            $(window).load(function () {
+                if (sessionStorage.getItem("initialLogin") == "y") {
+                    $("#picker").trigger("click");
+                    sessionStorage.removeItem("initialLogin");
+                }
+            });
         </script>
 
         <!-- END JAVASCRIPT -->

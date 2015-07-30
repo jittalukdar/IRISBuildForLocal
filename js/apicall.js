@@ -1,7 +1,7 @@
 /*#### GLOBAL VARIABLES ####*/
 //var BASE_URL = "http://localhost/iris/dev/";
 //var BASE_URL = "http://dev.wrctechnologies.com/irisdesign/dev/";
-var BASE_URL = "http://52.7.252.231/admin/";
+ var BASE_URL = "http://52.7.252.231/admin/";
 var html_body_back = '<input type="text" placeholder="Enter your keyword"><a class="search" href="#">Post</a> <a class="cls" href="#"></a>';
 // Regular Expression for Email.
 var regex = /^([\w-]+(?:\.[\w-]+)*)@((?:[\w-]+\.)*\w[\w-]{0,66})\.([a-z]{2,6}(?:\.[a-z]{2})?)$/i;
@@ -307,6 +307,7 @@ function fetchLoginData() {
                 sessionStorage.setItem("name", obj.name);
                 sessionStorage.setItem("regType", obj.reg_type);
                 sessionStorage.setItem("avatar", obj.avatar);
+                sessionStorage.setItem("initialLogin", "y");
                 location.href = 'dashboard.html';
             } else {
                 navigator.notification.alert("Sorry wrong username or password. Please try again.", null, "Notification", "OK");
@@ -1039,11 +1040,11 @@ function constructLearning(loop, catID, catName, catTitle, catDesc, catDate) {
     var cls = "collapse";
     var areaExpnd = "false";
     var style = "height: 0px;";
-    if (loop == 0) {
-        cls = "collapse in";
-        areaExpnd = true;
-        style = "height: 284px;";
-    }
+//    if (loop == 0) {
+//        cls = "collapse in";
+//        areaExpnd = true;
+//        style = "height: 284px;";
+//    }
     var html = '<div class="card card-underline panel">' +
             '<div data-target="#accordion7-' + loop + '" data-parent="#accordion7" data-toggle="collapse" class="card-head collapsed card-head-sm style-gray-bright rewardshead" aria-expanded="' + areaExpnd + '">' +
             '<header>' + catName + '<span style="display:inline-block; margin-left:40px; font-size:14px;">Recommended by: John Doe</span></header>' +
@@ -1096,7 +1097,7 @@ function fetchLearnTxt(catID, ulIndex) {
                     var randomnum = Math.random().toString(36).substr(2, 8);
                     $("#comment" + ulIndex).append(constructUL("t", randomnum, data[i].raw_name, data[i].url));
                 }
-                $("#comment" + ulIndex).fadeIn("very slow");
+                $("#comment" + ulIndex).slideDown("very slow");
             }
         });
     },1000);
@@ -1221,13 +1222,12 @@ function constructGoals(loop, loop2, goalID, catName, catTitle, noteArray, fileA
     var showHideStyleTxt = 'style="display:block;"';
     var showHideStyleMp3 = 'style="display:block;"';
     var showHideStyleMp4 = 'style="display:block;"';
-//    var showAllNotesBtn = "";
-//    alert(JSON.stringify(fileArray))
-    if (loop == 0) {
-        cls = "collapse in";
-        areaExpnd = true;
-        style = "height: 284px;";
-    }
+
+//    if (loop == 0) {
+//        cls = "collapse in";
+//        areaExpnd = true;
+//        style = "height: 284px;";
+//    }
     if (noteArray.length > 0) {
         for (var j = 0; j < noteArray.length; j++) {
             notesDivs += '<a class="btn btn-block btn-raised btn-default-bright ink-reaction" >' + noteArray[j].note + '</a>';
