@@ -43,7 +43,7 @@
                     <ul class="header-nav header-nav-options">
                         <li> <a class="btn btn-icon-toggle menubar-toggle" data-toggle="menubar" href="javascript:void(0);" id="picker"> <i class="fa fa-bars"></i> </a> </li>
                         <li class="header-nav-brand" >
-                            <div class="brand-holder"> <a href="dashboard.html"> <span class="text-lg text-bold text-primary">IRIS</span> </a> </div>
+                            <div class="brand-holder"> <a href="dashboard.html"> <span class="text-lg text-bold text-primary" id="dashTitle">IRIS</span> </a> </div>
                         </li>
                     </ul>
                 </div>
@@ -233,41 +233,41 @@
 
                 <ul id="main-menu" class="gui-controls">
                     <!-- BEGIN DASHBOARD -->
-                    <li> <a href="javascript:void(0);" class="active" id="loadHome">
+                    <li id="Home"> <a href="javascript:void(0);" class="active" id="loadHome">
                             <div class="gui-icon"><i class="md home"></i></div>
                             <span class="title">Home</span> </a> </li>
                     <!--end /menu-li --> 
                     <!-- END DASHBOARD -->
 
-                    <li> <a href="javascript:void(0);" id="loadLearn">
+                    <li id="Learn"> <a href="javascript:void(0);" id="loadLearn">
                             <div class="gui-icon"><i class="md learn"></i></div>
                             <span class="title">Learn</span> </a> </li>
                     <!--end /menu-li --> 
                     <!-- END EMAIL --> 
 
                     <!-- BEGIN DASHBOARD -->
-                    <li> <a href="javascript:void(0);" id="loadGoals">
+                    <li id="Goals"> <a href="javascript:void(0);" id="loadGoals">
                             <div class="gui-icon"><i class="md goal"></i></div>
                             <span class="title">Goals</span> </a> </li>
                     <!--end /menu-li --> 
                     <!-- END DASHBOARD --> 
 
                     <!-- BEGIN UI -->
-                    <li> <a href="javascript:void(0);" id="loadGroups">
+                    <li id="Groups"> <a href="javascript:void(0);" id="loadGroups">
                             <div class="gui-icon"><i class="md groups"></i></div>
                             <span class="title">Groups</span> </a> </li>
                     <!--end /menu-li --> 
                     <!-- END UI --> 
 
                     <!-- BEGIN TABLES -->
-                    <li> <a href="javascript:void(0);" id="loadRewards">
+                    <li id="Rewards"> <a href="javascript:void(0);" id="loadRewards">
                             <div class="gui-icon"><i class="md rewards"></i></div>
                             <span class="title">Rewards</span> </a> </li>
                     <!--end /menu-li --> 
                     <!-- END TABLES --> 
 
                     <!-- BEGIN FORMS -->
-                    <li> <a href="javascript:void(0);" id="loadEmail">
+                    <li id="Email"> <a href="javascript:void(0);" id="loadEmail">
                             <div class="gui-icon"><i class="md mail"></i></div>
                             <span class="title">Email</span> </a> </li>
                     <li class="menuline"></li>
@@ -275,29 +275,29 @@
                     <!-- END FORMS --> 
 
                     <!-- BEGIN PAGES -->
-                    <li> <a href="javascript:void(0);">
+                    <li id="Video"> <a href="javascript:void(0);">
                             <div class="gui-icon"><i class="md video"></i></div>
                             <span class="title">Video Call</span> </a> </li>
                     <!--end /menu-li --> 
                     <!-- END FORMS --> 
 
                     <!-- BEGIN CHARTS -->
-                    <li> <a href="javascript:void(0);">
+                    <li id="Voice"> <a href="javascript:void(0);">
                             <div class="gui-icon"><i class="md call"></i></div>
                             <span class="title">Voice Call</span> </a> </li>
                     <!--end /menu-li --> 
                     <!-- END CHARTS --> 
 
                     <!-- BEGIN LEVELS -->
-                    <li> <a href="javascript:void(0);">
+                    <li id="Chat"> <a href="javascript:void(0);">
                             <div class="gui-icon"><i class="md chat"></i></div>
                             <span class="title">Chat</span> </a> </li>
                     <li class="menuline"></li>
 
-                    <li> <a href="javascript:void(0);">
+                    <li id="Help"> <a href="javascript:void(0);">
                             <div class="gui-icon"><i class="md help"></i></div>
                             <span class="title">Help </span> </a> </li>
-                    <li> <a href="javascript:void(0);" onclick="logout();">
+                    <li id="Logout"> <a href="javascript:void(0);" onclick="logout();">
                             <div class="gui-icon"><i class="md logout"></i></div>
                             <span class="title">Logout</span> </a> </li>
                 </ul>
@@ -403,14 +403,14 @@
 
                 });
 
-                 $(document).on('click', function (e) {
-                     // Do whatever you want; the event that'd fire if the "special" element has been clicked on has been cancelled.
+                $(document).on('click', function (e) {
+                    // Do whatever you want; the event that'd fire if the "special" element has been clicked on has been cancelled.
 //                     $("#menubar").hide();
 //                     $('#base').css('padding-left', '0');
-                       if($("#menubarBody").hasClass("menubar-pin")){
-                            $('#base').css('padding-left', '64px');
-                       }
-                 });
+//                    if ($("#menubarBody").hasClass("menubar-pin")) {
+                        $('#base').css('padding-left', '64px');
+//                    }
+                });
 
             });
         </script>

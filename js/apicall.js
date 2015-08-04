@@ -16,8 +16,13 @@ var loading = '<div class="card feedbox">' +
         '</div>';
 /*#### GLOBAL VARIABLES ####*/
 $(document).ready(function () {
+    var title = "IRIS";
     $("#loadHome").click(function () {
-//        $('#base').css('padding-left', '240px');
+        // Change the title in dashboard
+        title = "IRIS";
+        $("#dashTitle").text(title);
+        activeMenu("Home");
+        // Change the title in dashboard
         $(".loadContent").fadeOut("fast");
         $(".loadContent").load("home.html").css("display", "none");
         $(".loadContent").slideDown(500);
@@ -26,6 +31,11 @@ $(document).ready(function () {
         }, 1000);
     });
     $("#loadGroups").click(function () {
+        // Change the title in dashboard
+        title = "Groups";
+        $("#dashTitle").text(title);
+         activeMenu("Groups");
+        // Change the title in dashboard
         $(".loadContent").fadeOut("fast");
         $(".loadContent").load("groups.html").css("display", "none");
         $(".loadContent").slideDown(500);
@@ -34,6 +44,11 @@ $(document).ready(function () {
         }, 1000);
     });
     $("#loadLearn").click(function () {
+        // Change the title in dashboard
+        title = "Learn";
+        $("#dashTitle").text(title);
+         activeMenu("Learn");
+        // Change the title in dashboard
         $(".loadContent").fadeOut("fast");
         $(".loadContent").load("learnmeterial.html").css("display", "none");
         $(".loadContent").slideDown(500);
@@ -42,6 +57,11 @@ $(document).ready(function () {
         }, 1000);
     });
     $("#loadGoals").click(function () {
+        // Change the title in dashboard
+        title = "Goals";
+        $("#dashTitle").text(title);
+         activeMenu("Goals");
+        // Change the title in dashboard
         $(".loadContent").fadeOut("fast");
         $(".loadContent").load("goal.html").css("display", "none");
         $(".loadContent").slideDown(500);
@@ -50,6 +70,11 @@ $(document).ready(function () {
         }, 1000);
     });
     $("#loadRewards").click(function () {
+        // Change the title in dashboard
+        title = "Rewards";
+        $("#dashTitle").text(title);
+         activeMenu("Rewards");
+        // Change the title in dashboard
         $(".loadContent").fadeOut("fast");
         $(".loadContent").load("reward.html").css("display", "none");
         $(".loadContent").slideDown(500);
@@ -58,8 +83,14 @@ $(document).ready(function () {
         }, 1000);
     });
     $("#loadEmail").click(function () {
+        // Change the title in dashboard
+        title = "Email";
+        $("#dashTitle").text(title);
+         activeMenu("Email");
+        // Change the title in dashboard
         $(".loadContent").load("email.html");
     });
+
 });
 // REGISTRATION CODE
 function regFunction() {
@@ -1004,12 +1035,13 @@ function fetchCoachRecommendation() {
         type: 'POST',
         data: "todo=coach",
         dataType: 'JSON',
+        async: true,
         success: function (data) {
             $("#coachRec").html("");
             console.log(JSON.stringify(data));
             for (var i = 0; i < data.length; i++) {
                 $("#coachRec").append(constructLearning(i, data[i].cat_id, data[i].cat_name, data[i].cat_title, data[i].cat_desc, data[i].created_on));
-                fetchLearnTxt(data[i].cat_id,i);
+                fetchLearnTxt(data[i].cat_id, i);
             }
             setTimeout(function () {
                 fetchAllLearning(data.length + 1);
@@ -1020,16 +1052,17 @@ function fetchCoachRecommendation() {
 function fetchAllLearning(length) {
     var l = length;
     $.ajax({
-        url: BASE_URL + 'api/fetchLearningMaterial',
+        url: BASE_URL + 'api/fetchLearningMaterialAll',
         type: 'POST',
         data: "todo=all",
         dataType: 'JSON',
+        async: true,
         success: function (data) {
             $("#allRec").html("");
 //            console.log(JSON.stringify(data));
             for (var i = 0; i < data.length; i++) {
                 $("#allRec").append(constructLearning(l, data[i].cat_id, data[i].cat_name, data[i].cat_title, data[i].cat_desc, data[i].created_on));
-                fetchLearnTxt(data[i].cat_id,l);
+                fetchLearnTxt(data[i].cat_id, l);
                 l++;
             }
 
@@ -1083,7 +1116,7 @@ function fetchLearnTxt(catID, ulIndex) {
     $("#comment" + ulIndex).html("");
     $("#comment" + ulIndex).fadeOut("very slow");
     setTimeout(function () {
-     $.ajax({
+        $.ajax({
             url: BASE_URL + 'api/fetchLearnText',
             type: 'POST',
             dataType: 'JSON',
@@ -1100,7 +1133,7 @@ function fetchLearnTxt(catID, ulIndex) {
                 $("#comment" + ulIndex).slideDown("very slow");
             }
         });
-    },1000);
+    }, 1000);
 }
 function fetchLearnAudio(catID, ulIndex) {
     $("#comment" + ulIndex).html("");
@@ -1591,7 +1624,7 @@ function runText(topicID) {
             $(".showContent").html(html);
         }
     });
-        
+
 }
 
 function runLearnMp4(link, fileType, loop) {
@@ -1622,7 +1655,7 @@ function runLearnMp4(link, fileType, loop) {
             $("#inline_content").html(html);
             $("#learn" + loop).colorbox({inline: true, width: "35%", href: "#inline_content"});
         }
-    }else{
+    } else {
         return false;
     }
 }
@@ -1657,4 +1690,13 @@ function cc() {
 function dd() {
     $("#menubar").show();
     $('#base').css('padding-left', '64px');
+}
+function activeMenu(text) {
+    $("#main-menu li").each(function () {
+        if ($(this).attr("id") == text) {
+            $("#"+text).addClass("active");
+        }else{
+            $(this).removeClass("active");
+        }
+    });
 }
