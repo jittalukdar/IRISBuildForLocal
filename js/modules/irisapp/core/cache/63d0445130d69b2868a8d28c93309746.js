@@ -181,9 +181,11 @@
         var state = this.getMenuState();
         if (state === AppNavigation.MENU_COLLAPSED) {
             this._handleMenubarEnter();
+            $('#base').css('padding-left', '240px');
         }
         else if (state === AppNavigation.MENU_MAXIMIZED) {
             this._handleMenubarLeave();
+            $('#base').css('padding-left', '64px');
         }
         else if (state === AppNavigation.MENU_HIDDEN) {
             this._handleMenubarEnter();
