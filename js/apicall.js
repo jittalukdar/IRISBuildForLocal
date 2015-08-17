@@ -1,7 +1,7 @@
 /*#### GLOBAL VARIABLES ####*/
-//var BASE_URL = "http://localhost/iris/dev/";
+var BASE_URL = "http://localhost/iris/dev/";
 //var BASE_URL = "http://dev.wrctechnologies.com/irisdesign/dev/";
- var BASE_URL = "http://52.7.252.231/admin/";
+// var BASE_URL = "http://52.7.252.231/admin/";
 var html_body_back = '<input type="text" placeholder="Enter your keyword"><a class="search" href="#">Post</a> <a class="cls" href="#"></a>';
 // Regular Expression for Email.
 var regex = /^([\w-]+(?:\.[\w-]+)*)@((?:[\w-]+\.)*\w[\w-]{0,66})\.([a-z]{2,6}(?:\.[a-z]{2})?)$/i;
@@ -34,7 +34,7 @@ $(document).ready(function () {
         // Change the title in dashboard
         title = "Groups";
         $("#dashTitle").text(title);
-         activeMenu("Groups");
+        activeMenu("Groups");
         // Change the title in dashboard
         $(".loadContent").fadeOut("fast");
         $(".loadContent").load("groups.html").css("display", "none");
@@ -47,7 +47,7 @@ $(document).ready(function () {
         // Change the title in dashboard
         title = "Learn";
         $("#dashTitle").text(title);
-         activeMenu("Learn");
+        activeMenu("Learn");
         // Change the title in dashboard
         $(".loadContent").fadeOut("fast");
         $(".loadContent").load("learnmeterial.html").css("display", "none");
@@ -60,7 +60,7 @@ $(document).ready(function () {
         // Change the title in dashboard
         title = "Goals";
         $("#dashTitle").text(title);
-         activeMenu("Goals");
+        activeMenu("Goals");
         // Change the title in dashboard
         $(".loadContent").fadeOut("fast");
         $(".loadContent").load("goal.html").css("display", "none");
@@ -73,7 +73,7 @@ $(document).ready(function () {
         // Change the title in dashboard
         title = "Rewards";
         $("#dashTitle").text(title);
-         activeMenu("Rewards");
+        activeMenu("Rewards");
         // Change the title in dashboard
         $(".loadContent").fadeOut("fast");
         $(".loadContent").load("reward.html").css("display", "none");
@@ -86,7 +86,7 @@ $(document).ready(function () {
         // Change the title in dashboard
         title = "Email";
         $("#dashTitle").text(title);
-         activeMenu("Email");
+        activeMenu("Email");
         // Change the title in dashboard
         $(".loadContent").load("email.html");
     });
@@ -375,7 +375,7 @@ function fetchDashboardPostsCustom() {
             $("#groupDetails").html("");
 //              alert(JSON.stringify(resp));
             for (var i = 0; i < resp.length; i++) {
-                $("#groupDetails").prepend(constructCustomPostDasboardDiv(i, resp[i].feed_title, resp[i].feed_desc, resp[i].user_name, resp[i].feed_date, resp[i].comment_count, resp[i].likes, resp[i].comment, resp[i].reg_type, resp[i].feed_image, resp[i].post_id));
+                $("#groupDetails").prepend(constructCustomPostDasboardDiv(i, resp[i].feed_title, resp[i].feed_desc, resp[i].user_name, resp[i].feed_date, resp[i].comment_count, resp[i].likes, resp[i].comment, resp[i].reg_type, resp[i].feed_image, resp[i].post_id, resp[i].postedBy));
             }
         }
     });
@@ -394,7 +394,7 @@ function fetchDashboardPosts() {
             for (var i = 0; i < resp.length; i++) {
 //                alert(JSON.stringify(resp[i].topic_files));
 //                  alert(JSON.stringify(resp[i].comment));
-                $("#groupDetails").append(constructDasboardDiv(i, resp[i].feed_title, resp[i].feed_desc, resp[i].user_name, resp[i].feed_date, resp[i].comment_count, resp[i].likes, resp[i].comment, resp[i].topic, resp[i].meterial_count, resp[i].topic_files, resp[i].array_index, resp[i].topic_id));
+                $("#groupDetails").append(constructDasboardDiv(i, resp[i].feed_title, resp[i].feed_desc, resp[i].user_name, resp[i].feed_date, resp[i].comment_count, resp[i].likes, resp[i].comment, resp[i].topic, resp[i].meterial_count, resp[i].topic_files, resp[i].array_index, resp[i].topic_id, resp[i].postedBy, resp[i].postID));
                 if (resp[i].meterial_count == 0) {
                     $('#bulb' + i).removeAttr("onclick");
                     $('#options' + i).css('display', 'none');
@@ -404,7 +404,7 @@ function fetchDashboardPosts() {
         }
     });
 }
-function constructDasboardDiv(i, feedTitle, feedDesc, fullName, feedDate, commentCount, likesCount, comments, topicname, meterialCount, topicFiles, indexNo, topicID) {
+function constructDasboardDiv(i, feedTitle, feedDesc, fullName, feedDate, commentCount, likesCount, comments, topicname, meterialCount, topicFiles, indexNo, topicID, postedBy, postID) {
 //    alert(indexNo);
 //    alert(comments.length);
     var cls = "";
@@ -443,9 +443,17 @@ function constructDasboardDiv(i, feedTitle, feedDesc, fullName, feedDate, commen
             '</div>' +
             '</div>' +
             '<div class="col-md-9 newsfeed newsfeed2 padright" id="newsfeed' + i + '">' +
-            '<div class="card-body">' +
-            '<a href="javascript:void(0)" onclick="seeDetailedPost(' + indexNo + ',' + topicID + ')">' +
-            '<h2>' + feedTitle + '</h2>' +
+            '<div class="card-body">';
+    if (postedBy) {
+        html += '<div style="width:100%; text-align:right; height:32px;">' +
+                '<div class="sponsord">Sponsored</div>' +
+                '</div>';
+        html += '<a href="javascript:void(0)" onclick="seeDetailedCustomPost(' + postID + ')">';
+    } else {
+        html += '<a href="javascript:void(0)" onclick="seeDetailedPost(' + indexNo + ',' + topicID + ')">';
+    }
+//    '<a href="javascript:void(0)" onclick="seeDetailedPost(' + indexNo + ',' + topicID + ')">' +
+    html += '<h2>' + feedTitle + '</h2>' +
             '<div class="text-default-light">Posted by <span class="name_post">' + fullName + '</span> <span class="post_time">' + feedDate + '</span> <a href="#">' + commentCount + ' comments <i class="fa fa-comment-o"></i></a></div>' +
             '<p id="desc' + i + '">' + feedDesc + '</p>' +
             '</a>';
@@ -494,7 +502,7 @@ function constructDasboardDiv(i, feedTitle, feedDesc, fullName, feedDate, commen
             '</div>';
     return html;
 }
-function constructCustomPostDasboardDiv(i, feedTitle, feedDesc, fullName, feedDate, commentCount, likesCount, comments, reg_type, imageRaw, postID) {
+function constructCustomPostDasboardDiv(i, feedTitle, feedDesc, fullName, feedDate, commentCount, likesCount, comments, reg_type, imageRaw, postID, groupName) {
     var image = "";
     if (reg_type == 1) {
         image = '<img alt="" src="data:image/jpeg;base64,' + imageRaw + '" class="img-responsive">';
@@ -512,8 +520,13 @@ function constructCustomPostDasboardDiv(i, feedTitle, feedDesc, fullName, feedDa
             '</div>' +
             '</div>' +
             '<div class="col-md-9 newsfeed newsfeed2" id="newsfeed' + i + '">' +
-            '<div class="card-body">' +
-            '<a href="javascript:void(0)" onclick="seeDetailedCustomPost(' + postID + ')">' +
+            '<div class="card-body">';
+    if (groupName) {
+        html += '<div style="width:100%; text-align:right; height:32px;">' +
+                '<div class="sponsord">Posted in Group: ' + groupName + '</div>' +
+                '</div>';
+    }
+    html += '<a href="javascript:void(0)" onclick="seeDetailedCustomPost(' + postID + ')">' +
             '<h2>' + feedTitle + '</h2>' +
             '<div class="text-default-light">Posted by <span class="name_post">' + fullName + '</span> <span class="post_time">' + feedDate + '</span> <a href="#">' + commentCount + ' comments <i class="fa fa-comment-o"></i></a></div>' +
             '<p id="desc' + i + '">' + feedDesc + '</p>' +
@@ -567,7 +580,7 @@ function constructCustomPostDasboardDiv(i, feedTitle, feedDesc, fullName, feedDa
     return html;
 }
 function seeDetailedPost(arrayIndex, topicID) {
-//    alert(arrayIndex);
+//    alert("Array Index :: "+arrayIndex);
     sessionStorage.setItem("arrayIndex", arrayIndex);
     sessionStorage.setItem("topicID", topicID);
     sessionStorage.setItem("postType", "feed");
@@ -577,6 +590,7 @@ function seeDetailedPost(arrayIndex, topicID) {
     postDetailsFunction();
 }
 function seeDetailedCustomPost(customPostID) {
+//    alert("Custom Post ID :: "+ customPostID);
     sessionStorage.setItem("arrayIndex", 0);
     sessionStorage.setItem("topicID", 0);
     sessionStorage.setItem("postID", customPostID);
@@ -656,8 +670,8 @@ function fetchComments(feedID, commentCount, originalContent) {
         },
         success: function (data) {
             $("#commentBody").html(originalContent);
-            $("#commentCount").html(commentCount + " Comments");
-            if (commentCount > 0) {
+            $("#commentCount").html(data.length + " Comments");
+            if (data.length > 0) {
                 $("#commentBody").css("display", "block");
             } else {
                 $("#commentBody").css("display", "none");
@@ -1694,8 +1708,8 @@ function dd() {
 function activeMenu(text) {
     $("#main-menu li").each(function () {
         if ($(this).attr("id") == text) {
-            $("#"+text).addClass("active");
-        }else{
+            $("#" + text).addClass("active");
+        } else {
             $(this).removeClass("active");
         }
     });
