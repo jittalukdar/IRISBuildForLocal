@@ -1225,7 +1225,7 @@ a.text-success:hover {
 }
 .header-nav > li > a:hover, .header-nav > li > a:focus {
     text-decoration: none;
-    background-color: rgba(12, 12, 12, 0.07);
+/*    background-color: rgba(12, 12, 12, 0.07);*/
 }
 .header-nav > li.disabled > a {
     color: #969c9c;
@@ -1244,7 +1244,7 @@ a.text-success:hover {
     max-width: none;
 }
 .header-nav .btn-icon-toggle:hover {
-    background-color: rgba(12, 12, 12, 0.07);
+    /*background-color: rgba(12, 12, 12, 0.07);*/
 }
 .header-nav .navbar-search {
     float: right;
@@ -2069,7 +2069,7 @@ body:not(.menubar-first) .menubar-fixed-panel {
     color: #fff;
 }
 .menubar-inverse .gui-icon:hover {
-    background-color: #2b323a !important; /*rgba(255, 255, 255, 0.12);*/
+   /* background-color: #2b323a !important; rgba(255, 255, 255, 0.12);*/
     color: #ffffff;
 }
 .menubar-inverse .gui-controls a.expanded .gui-icon, .menubar-inverse .gui-controls li.active .gui-icon, .menubar-inverse .gui-controls li.active .gui-icon:hover {
@@ -2083,7 +2083,7 @@ body:not(.menubar-first) .menubar-fixed-panel {
     color: #ffffff;
 }
 .expanded-menu-icon .menubar-inverse .gui-folder:hover:not(.active) .gui-icon {
-    background-color: rgba(255, 255, 255, 0.12);
+    /*background-color: rgba(255, 255, 255, 0.12);*/
     color: #ffffff;
 }
 .expanded-menu-icon .menubar-inverse .gui-controls > li:not(.gui-folder) .gui-icon:hover {
@@ -2093,7 +2093,7 @@ body:not(.menubar-first) .menubar-fixed-panel {
     background: inherit;
 }
 .menubar-visible .gui-folder:hover:not(.active) .gui-icon {
-    background-color: rgba(12, 12, 12, 0.07);
+    /*background-color: rgba(12, 12, 12, 0.07);*/
     color: #313534;
 }
 .menubar-visible .gui-controls > li:not(.gui-folder) .gui-icon:hover {
@@ -2103,7 +2103,7 @@ body:not(.menubar-first) .menubar-fixed-panel {
     background: inherit;
 }
 .menubar-visible .menubar-inverse .gui-folder:hover:not(.active) .gui-icon {
-    background-color: rgba(255, 255, 255, 0.12);
+    /*background-color: rgba(255, 255, 255, 0.12);*/
     color: #ffffff;
 }
 .menubar-visible .menubar-inverse .gui-controls > li:not(.gui-folder) .gui-icon:hover {
@@ -2114,7 +2114,7 @@ body:not(.menubar-first) .menubar-fixed-panel {
 }
 @media (min-width: 1200px) {
     .menubar-pin .gui-controls > li:not(.gui-folder) > a:hover {
-        background-color: rgba(12, 12, 12, 0.07);
+        /*background-color: rgba(12, 12, 12, 0.07);*/
     }
     .menubar-pin .gui-controls > li.active:not(.gui-folder) > a {
         background-color: #ffffff;
@@ -2123,13 +2123,13 @@ body:not(.menubar-first) .menubar-fixed-panel {
         transition: background 0.3s linear;
     }
     .menubar-pin .menubar-inverse .gui-controls > li:not(.gui-folder) > a:hover {
-        background-color: #313942;
+        /*background-color: #313942;*/
     }
     .menubar-pin .menubar-inverse .gui-controls > li.active:not(.gui-folder) > a {
-        background-color: #20252b;
+        /*background-color: #20252b;*/
     }
     .menubar-pin .gui-folder:hover:not(.active) .gui-icon {
-        background-color: rgba(12, 12, 12, 0.07);
+        /*background-color: rgba(12, 12, 12, 0.07);*/
         color: #313534;
     }
     .menubar-pin .gui-controls > li:not(.gui-folder) .gui-icon:hover {
@@ -2139,7 +2139,7 @@ body:not(.menubar-first) .menubar-fixed-panel {
         background: inherit;
     }
     .menubar-pin .menubar-inverse .gui-folder:hover:not(.active) .gui-icon {
-        background-color: rgba(255, 255, 255, 0.12);
+        /*background-color: rgba(255, 255, 255, 0.12);*/
         color: #ffffff;
     }
     .menubar-pin .menubar-inverse .gui-controls > li:not(.gui-folder) .gui-icon:hover {
@@ -3508,7 +3508,7 @@ span.help-block {
     border-color: transparent;
 }
 .btn-flat:hover, .btn-icon-toggle:hover, .btn-flat:focus, .btn-icon-toggle:focus, .open .dropdown-toggle.btn-flat, .open .dropdown-toggle.btn-icon-toggle {
-    background-color: rgba(12, 12, 12, 0.07);
+    /*background-color: rgba(12, 12, 12, 0.07);*/
     border-color: transparent;
     -webkit-box-shadow: none;
     box-shadow: none;
@@ -7534,14 +7534,18 @@ a:hover, a:active, a:focus{
 
 .sponsord{ 
     float:left;
-    padding:2px 9px;
+    padding:2px 0px;
     font-size:12px;
-    background-color: #ADB0B2;
-    color: #000;
+    /*background-color: #ADB0B2;*/
+    color: #aaa;
     text-align:center;
     -moz-border-radius: 5px;
     -webkit-border-radius: 5px;
     -khtml-border-radius: 5px;
     border-radius: 5px;
 
+}
+
+#Cancel{
+    background-color: #C0C2C1 !important;
 }

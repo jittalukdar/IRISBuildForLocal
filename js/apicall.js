@@ -394,17 +394,18 @@ function fetchDashboardPosts() {
             for (var i = 0; i < resp.length; i++) {
 //                alert(JSON.stringify(resp[i].topic_files));
 //                  alert(JSON.stringify(resp[i].comment));
-                $("#groupDetails").append(constructDasboardDiv(i, resp[i].feed_title, resp[i].feed_desc, resp[i].user_name, resp[i].feed_date, resp[i].comment_count, resp[i].likes, resp[i].comment, resp[i].topic, resp[i].meterial_count, resp[i].topic_files, resp[i].array_index, resp[i].topic_id, resp[i].postedBy, resp[i].postID));
+                var randomnum = Math.random().toString(36).substr(2, 8);
+                $("#groupDetails").append(constructDasboardDiv(randomnum, resp[i].feed_title, resp[i].feed_desc, resp[i].user_name, resp[i].feed_date, resp[i].comment_count, resp[i].likes, resp[i].comment, resp[i].topic, resp[i].meterial_count, resp[i].topic_files, resp[i].array_index, resp[i].topic_id, resp[i].postedBy, resp[i].postID, resp[i].postedImg));
                 if (resp[i].meterial_count == 0) {
-                    $('#bulb' + i).removeAttr("onclick");
-                    $('#options' + i).css('display', 'none');
-                    $('#newsfeed' + i).removeClass('padright');
+                    $('#bulb' + randomnum).removeAttr("onclick");
+                    $('#options' + randomnum).css('display', 'none');
+                    $('#newsfeed' + randomnum).removeClass('padright');
                 }
             }
         }
     });
 }
-function constructDasboardDiv(i, feedTitle, feedDesc, fullName, feedDate, commentCount, likesCount, comments, topicname, meterialCount, topicFiles, indexNo, topicID, postedBy, postID) {
+function constructDasboardDiv(i, feedTitle, feedDesc, fullName, feedDate, commentCount, likesCount, comments, topicname, meterialCount, topicFiles, indexNo, topicID, postedBy, postID, postedImg) {
 //    alert(indexNo);
 //    alert(comments.length);
     var cls = "";
@@ -438,7 +439,13 @@ function constructDasboardDiv(i, feedTitle, feedDesc, fullName, feedDate, commen
             '<div class="col-md-3">' +
             '<div class="card-body">' +
             '<article class="style-default-bright">' +
-            '<div> <img alt="" src="img/modules/obama.png" class="img-responsive"> </div>' +
+            '<div>';
+    if (postedBy) {
+        html += '<img alt="" src="'+postedImg+'" class="img-responsive">';
+    } else {
+        html += '<img alt="" src="img/modules/obama.png" class="img-responsive">';
+    }
+    html += '</div>' +
             '</article>' +
             '</div>' +
             '</div>' +
@@ -459,7 +466,7 @@ function constructDasboardDiv(i, feedTitle, feedDesc, fullName, feedDate, commen
             '</a>';
 //    if (comments.length > 0) {
     html += '<hr>' +
-            '<h4 style="color:#0080db;">Comment <small>(<a href="postdetails.html">see all comments</a>)</small></h4>' +
+            '<h4 style="color:#0080db;">Comment <small>(<a href="javascript:void();">see all comments</a>)</small></h4>' +
             '<ul class="list-comments">';
     for (var j = 0; j < comments.length; j++) {
         var src = "";
@@ -486,7 +493,7 @@ function constructDasboardDiv(i, feedTitle, feedDesc, fullName, feedDate, commen
             '<li><a title="" class="like active" href="#"> + ' + likesCount + '</a> </li>' +
             '<li><a title="" class="share" href="#"></a> </li>' +
             '<li>#' + topicname + '</li>' +
-            '<li><a id="bulb' + i + '" class="' + cls + '" href="javascript:void(0);" onclick="hideOptions(' + i + ')"></a> </li>' +
+            '<li><a id="bulb' + i + '" class="' + cls + '" href="javascript:void(0);" onclick="hideOptions(\'' + i + '\');"></a> </li>' +
             '</ul>' +
             '</div>' +
             '<div class="options3" id="options' + i + '" style="top:0 !important;">' +
@@ -533,7 +540,7 @@ function constructCustomPostDasboardDiv(i, feedTitle, feedDesc, fullName, feedDa
             '</a>';
 //    if (commentCount > 0) {
     html += '<hr>' +
-            '<h4 style="color:#0080db;">Comment <small>(<a href="postdetails.html">see all comments</a>)</small></h4>' +
+            '<h4 style="color:#0080db;">Comment <small>(<a href="javascript:void();">see all comments</a>)</small></h4>' +
             '<ul class="list-comments">';
     for (var j = 0; j < comments.length; j++) {
         var src = "";
@@ -1482,14 +1489,14 @@ function logout() {
     location.href = "index.html";
 }
 function hideOptions(id) {
-//    alert("bulb"+id);
-//    if($('#newsfeed' + id).hasClass("padright")){
-//         alert("has class padright");
-//         $('#newsfeed' + id).removeClass('padright');
-//    }else{
-//         alert("no padright class");
-//         $('#newsfeed' + id).addClass('padright');
-//    }
+    /*alert("bulb"+id);
+     if($('#newsfeed' + id).hasClass("padright")){
+     alert("has class padright");
+     $('#newsfeed' + id).removeClass('padright');
+     }else{
+     alert("no padright class");
+     $('#newsfeed' + id).addClass('padright');
+     }*/
     if ($('#options' + id).css("display") == "block") {
         $('#newsfeed' + id).removeAttr("class");
         $('#newsfeed' + id).attr("class", "col-md-9 newsfeed newsfeed2");
