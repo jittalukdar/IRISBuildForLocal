@@ -1322,7 +1322,7 @@ function constructGoals(loop, loop2, goalID, catName, catTitle, noteArray, fileA
             '<div class="checkbox checkbox-styled tile-text">' +
             '<label>' +
             '<input type="checkbox">' +
-            '<span class="musicli">' + fileArray.mp3 + '</span>' +
+            '<span class="musicli" onclick="runMp3(\'' + decodeURIComponent(fileArray.mp3Link) + '\');">' + fileArray.mp3 + '</span>' +
             '</label>' +
             '</div>' +
             '</li>' +
@@ -1330,7 +1330,7 @@ function constructGoals(loop, loop2, goalID, catName, catTitle, noteArray, fileA
             '<div class="checkbox checkbox-styled tile-text">' +
             '<label>' +
             '<input type="checkbox">' +
-            '<span class="videoli">' + fileArray.mp4 + '</span>' +
+            '<span class="videoli" onclick="runMp4(\'' + fileArray.mp4Link + '\');">' + fileArray.mp4 + '</span>' +
             '</label>' +
             '</div>' +
             '</li>' +
@@ -1713,6 +1713,10 @@ function dd() {
     $('#base').css('padding-left', '64px');
 }
 function activeMenu(text) {
+    var menuBarClass = $("#menubarBody");
+    if(menuBarClass.hasClass("menubar-visible")){
+        $("#picker").trigger("click");
+    }
     $("#main-menu li").each(function () {
         if ($(this).attr("id") == text) {
             $("#" + text).addClass("active");
